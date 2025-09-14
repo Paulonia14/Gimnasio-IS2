@@ -3,6 +3,8 @@ package com.gimnasio.gimnasio.entities;
 import com.gimnasio.gimnasio.enumerations.TipoDocumento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
@@ -12,6 +14,8 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "personas")
 @Inheritance(strategy = InheritanceType.JOINED) // Para herencia
 public class Persona {
@@ -51,5 +55,16 @@ public class Persona {
 
     @NotNull(message = "El campo eliminado no puede ser nulo")
     private Boolean eliminado = false;
+
+    @NotNull(message = "El campo es requerido")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_direccion", nullable = false)
+    private Direccion direccion;
+
+    @NotNull(message = "El campo es requerido")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "fk_sucursal", nullable = false)
+    private Sucursal sucursal;
+
 }
 

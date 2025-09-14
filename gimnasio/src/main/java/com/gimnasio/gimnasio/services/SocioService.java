@@ -14,74 +14,109 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SocioService {
+public class SocioService implements ServicioBase<Socio> {
+
     @Autowired
     private SocioRepository socioRepository;
 
-    public void crearSocio(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Long numeroSocio) {
+    @Override
+    @Transactional
+    public List<Socio> findAll() throws Exception {
         try {
-            //validar(nombre, apellido, fechaNacimiento, tipoDocumento, numeroDocumento, telefono, correoElectronico, numeroSocio);
-            Socio socio = new Socio();
-            socio.setNombre(nombre);
-            socio.setApellido(apellido);
-            socio.setFechaNacimiento(fechaNacimiento);
-            socio.setTipoDocumento(tipoDocumento);
-            socio.setNumeroDocumento(numeroDocumento);
-            socio.setTelefono(telefono);
-            socio.setCorreoElectronico(correoElectronico);
-            socio.setNumeroSocio(numeroSocio);
-            socio.setEliminado(false);
-            socioRepository.save(socio);
-        } catch (DataAccessException ex) {
-            System.err.println("Error al crear socio -> " + ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Validación fallida al crear socio -> " + ex.getMessage());
+            List<Socio> entities = this.socioRepository.findAll();
+            return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
-    public void validar(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Long numeroSocio) {
-
+    @Override
+    @Transactional
+    public Socio findById(String id) throws Exception {
+        try {
+            Optional<Socio> opt = this.socioRepository.findById(id);
+            return opt.get();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
-    public void modificarSocio(String id, String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, Long numeroSocio){
+    @Override
+    @Transactional
+    public Socio saveOne(Socio entity) throws Exception {
         try {
-            Optional<Socio> opcionalSocio = socioRepository.findById(id);
-            if (opcionalSocio.isPresent()) {
-                Socio socio = opcionalSocio.get();
-                socio.setNombre(nombre);
-                socio.setApellido(apellido);
-                socio.setFechaNacimiento(fechaNacimiento);
-                socio.setTipoDocumento(tipoDocumento);
-                socio.setNumeroDocumento(numeroDocumento);
-                socio.setNumeroSocio(numeroSocio);
-                socioRepository.save(socio);
+            Socio socio = this.socioRepository.save(entity);
+            return socio;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
-            } else{
-                System.out.println("No existe el socio con el id: " + id);
+    @Override
+    @Transactional
+    public Socio updateOne(Socio entity, String id) throws Exception {
+        try {
+            Optional<Socio> opt = this.socioRepository.findById(id);
+            Socio socio = opt.get();
+
+            socio.setNombre(entity.getNombre());
+            socio.setApellido(entity.getApellido());
+            socio.setFechaNacimiento(entity.getFechaNacimiento());
+            socio.setTipoDocumento(entity.getTipoDocumento());
+            socio.setNumeroDocumento(entity.getNumeroDocumento());
+            socio.setTelefono(entity.getTelefono());
+            socio.setCorreoElectronico(entity.getCorreoElectronico());
+            socio.setNumeroSocio(entity.getNumeroSocio());
+            socio.setDireccion(entity.getDireccion());
+            socio.setSucursal(entity.getSucursal());
+
+            socio = this.socioRepository.save(socio);
+            return socio;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(String id) throws Exception {
+        try {
+            Optional<Socio> opt = this.socioRepository.findById(id);
+            if (opt.isPresent()) {
+                Socio socio = opt.get();
+                socio.setEliminado(!socio.getEliminado());
+                this.socioRepository.save(socio);
+            } else {
+                throw new Exception("Socio no encontrado");
             }
-        } catch (DataAccessException ex){
-            System.err.println("Error al modificar socio -> " + ex.getMessage());
+            return true;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
-    public Collection<Socio> listarSocio() {
+    /*   Métodos nuevos   */
+
+    @Transactional
+    public List<Socio> findAllByEliminadoFalse() throws Exception {
         try {
-            return socioRepository.findAll();
-        } catch (DataAccessException ex) {
-            System.err.println("Error al listar socios -> " + ex.getMessage());
-            return List.of();
+            List<Socio> entities = this.socioRepository.findAllByEliminadoFalse();
+            return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
     @Transactional
-    public Collection<Socio> listarSocioActivo() {
+    public Socio findByIdAndEliminadoFalse(String id) throws Exception {
         try {
-            return socioRepository.findAllActivos();
-        } catch (DataAccessException ex) {
-            System.err.println("Error al listar socios activos -> " + ex.getMessage());
-            return List.of();
+            Optional<Socio> opt = this.socioRepository.findByIdAndEliminadoFalse(id);
+            return opt.orElse(null);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
-
-    // falta validar y asociarSocioUsuario
 }
+
+
+// falta validar y asociarSocioUsuario

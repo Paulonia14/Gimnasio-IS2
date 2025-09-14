@@ -2,47 +2,115 @@ package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Persona;
 import com.gimnasio.gimnasio.repositories.PersonaRepository;
+import com.gimnasio.gimnasio.services.ServicioBase;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PersonaService {
+public class PersonaService implements ServicioBase<Persona> {
+
     @Autowired
     private PersonaRepository personaRepository;
 
-    // Buscar persona por ID
-    public Persona buscarPersona(String id) {
+    @Override
+    @Transactional
+    public List<Persona> findAll() throws Exception {
         try {
-            Optional<Persona> persona = personaRepository.findById(id);
-            return persona.orElse(null);
-        } catch (DataAccessException ex) {
-            System.err.println("Error al buscar persona con ID: " + id + " -> " + ex.getMessage());
-            return null;
-        } catch (Exception ex) {
-            System.err.println("Error inesperado al buscar persona: " + ex.getMessage());
-            return null;
+            List<Persona> entities = this.personaRepository.findAll();
+            return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
-    // Eliminado logico de unna persona
-    public void eliminarPersona(String id) {
+    @Override
+    @Transactional
+    public Persona findById(String id) throws Exception {
         try {
-            Optional<Persona> persona = personaRepository.findById(id);
-            if (persona.isPresent()) {
-                Persona p = persona.get();
-                p.setEliminado(true);
-                personaRepository.save(p);
+            Optional<Persona> opt = this.personaRepository.findById(id);
+            return opt.get();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public Persona saveOne(Persona entity) throws Exception {
+        try {
+            Persona persona = this.personaRepository.save(entity);
+            return persona;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public Persona updateOne(Persona entity, String id) throws Exception {
+        try {
+            Optional<Persona> opt = this.personaRepository.findById(id);
+            Persona persona = opt.get();
+
+            persona.setNombre(entity.getNombre());
+            persona.setApellido(entity.getApellido());
+            persona.setNumeroDocumento(entity.getNumeroDocumento());
+            persona.setFechaNacimiento(entity.getFechaNacimiento());
+            persona.setTelefono(entity.getTelefono());
+            persona.setCorreoElectronico(entity.getCorreoElectronico());
+            persona.setTipoDocumento(entity.getTipoDocumento());
+            persona.setDireccion(entity.getDireccion());
+            persona.setSucursal(entity.getSucursal());
+
+            persona = this.personaRepository.save(persona);
+            return persona;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(String id) throws Exception {
+        try {
+            Optional<Persona> opt = this.personaRepository.findById(id);
+            if (opt.isPresent()) {
+                Persona persona = opt.get();
+                persona.setEliminado(!persona.getEliminado());
+                this.personaRepository.save(persona);
             } else {
-                System.out.println("Persona con ID " + id + " no encontrada.");
+                throw new Exception("Persona no encontrada");
             }
-        } catch (DataAccessException ex) {
-            System.err.println("Error al eliminar persona con ID: " + id + " -> " + ex.getMessage());
-        } catch (Exception ex) {
-            System.err.println("Error inesperado al eliminar persona: " + ex.getMessage());
+            return true;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 
+    /*   Métodos nuevos   */
+
+    @Transactional
+    public List<Persona> findAllByEliminadoFalse() throws Exception {
+        try {
+            List<Persona> entities = this.personaRepository.findAllByEliminadoFalse();
+            return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public Persona findByIdAndEliminadoFalse(String id) throws Exception {
+        try {
+            Optional<Persona> opt = this.personaRepository.findByIdAndEliminadoFalse(id);
+            return opt.orElse(null);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.entities;
 
+import com.gimnasio.gimnasio.enumerations.TipoEmpleado;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -14,11 +15,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "socios")
-public class Socio extends Persona {
+@Table(name = "empleados")
+public class Empleado extends Persona {
 
-    @NotNull(message = "El número de socio es obligatorio")
-    @Min(value = 1, message = "El número de socio debe ser mayor a 0")
-    private Long numeroSocio;
+    @NotNull(message = "El campo es obligatorio")
+    private TipoEmpleado tipoEmpleado;
 
 }
