@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "personas")
+@Inheritance(strategy = InheritanceType.JOINED) // Para herencia
 public class Persona {
     @Id
     @GeneratedValue
