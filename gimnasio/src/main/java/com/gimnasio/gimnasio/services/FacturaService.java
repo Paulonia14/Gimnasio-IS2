@@ -1,11 +1,13 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Factura;
+import com.gimnasio.gimnasio.enumerations.EstadoFactura;
 import com.gimnasio.gimnasio.repositories.FacturaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,24 +16,27 @@ public class FacturaService {
     @Autowired
     private FacturaRepository facturaRepository;
 
-    public void crearFactura(Long numeroFactura, ) throws Exception{
+    public void crearFactura(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado) throws Exception{
         try {
-            validar();
+            validar(numeroFactura, fechaFactura, totalPagado, estado);
             Factura factura = new Factura();
-
+            factura.setNumeroFactura(numeroFactura); // Ver bien lo de numero factura !!!
+            factura.setFechaFactura(fechaFactura);
+            factura.setTotalPagado(totalPagado);
+            factura.setEstadoFactura(estado);
             facturaRepository.save(factura);
         } catch (Exception e) {
             throw new Exception("Error al crear factura: " + e.getMessage());
         }
     }
 
-    public void validar() throws Exception{
+    public void validar(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado) throws Exception{
 
     }
 
-    public void modificarFactura(String id,) throws Exception{
+    public void modificarFactura(String id, Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado) throws Exception{
         try {
-            validar();
+            validar(numeroFactura, fechaFactura, totalPagado, estado);
             Optional<Factura> factura = facturaRepository.findById(id);
             if (factura.isPresent()) {
                 Factura facturaActual = factura.get();

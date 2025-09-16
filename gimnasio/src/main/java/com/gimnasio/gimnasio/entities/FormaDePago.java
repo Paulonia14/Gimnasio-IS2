@@ -20,5 +20,6 @@ public class FormaDePago {
     @Enumerated(EnumType.STRING)
     private TipoPago tipoPago;
     private String observacion;
+    @NotNull(message = "El campo eliminado no puede ser nulo")
     private boolean eliminado;
 }
