@@ -37,31 +37,6 @@ public class DepartamentoService implements ServicioBase<Departamento> {
         }
     }
 
-    @Override
-    @Transactional
-    public Departamento saveOne(Departamento entity) throws Exception {
-        try {
-            Departamento departamento = this.departamentoRepository.save(entity);
-            return departamento;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Departamento updateOne(Departamento entity, String id) throws Exception {
-        try {
-            Optional<Departamento> opt = this.departamentoRepository.findById(id);
-            Departamento departamento = opt.get();
-            departamento.setNombre(entity.getNombre());
-            departamento.setProvincia(entity.getProvincia());
-            departamento = this.departamentoRepository.save(departamento);
-            return departamento;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
 
     @Override
     @Transactional

@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
@@ -19,6 +20,7 @@ public class Socio extends Persona {
 
     @NotNull(message = "El número de socio es obligatorio")
     @Min(value = 1, message = "El número de socio debe ser mayor a 0")
+    @Column(name = "numero_socio", unique = true, nullable = false) // Para que no se repita
     private Long numeroSocio;
 
 }

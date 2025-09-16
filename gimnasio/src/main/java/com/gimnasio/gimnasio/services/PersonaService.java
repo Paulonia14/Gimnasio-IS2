@@ -41,41 +41,6 @@ public class PersonaService implements ServicioBase<Persona> {
 
     @Override
     @Transactional
-    public Persona saveOne(Persona entity) throws Exception {
-        try {
-            Persona persona = this.personaRepository.save(entity);
-            return persona;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Persona updateOne(Persona entity, String id) throws Exception {
-        try {
-            Optional<Persona> opt = this.personaRepository.findById(id);
-            Persona persona = opt.get();
-
-            persona.setNombre(entity.getNombre());
-            persona.setApellido(entity.getApellido());
-            persona.setNumeroDocumento(entity.getNumeroDocumento());
-            persona.setFechaNacimiento(entity.getFechaNacimiento());
-            persona.setTelefono(entity.getTelefono());
-            persona.setCorreoElectronico(entity.getCorreoElectronico());
-            persona.setTipoDocumento(entity.getTipoDocumento());
-            persona.setDireccion(entity.getDireccion());
-            persona.setSucursal(entity.getSucursal());
-
-            persona = this.personaRepository.save(persona);
-            return persona;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
     public boolean deleteById(String id) throws Exception {
         try {
             Optional<Persona> opt = this.personaRepository.findById(id);

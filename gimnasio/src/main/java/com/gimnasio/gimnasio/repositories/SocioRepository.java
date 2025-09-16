@@ -10,11 +10,16 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 @Repository
-public interface SocioRepository extends JpaRepository<Socio, String> {
+public interface SocioRepository extends JpaRepository<Socio, Long> {
 
     @Query("SELECT s FROM Socio s WHERE s.eliminado = false")
     List<Socio> findAllByEliminadoFalse();
 
     @Query("SELECT s FROM Socio s WHERE s.id = :id AND s.eliminado = false")
     Optional<Socio> findByIdAndEliminadoFalse(@Param("id") String id);
+
+    boolean existsByNumeroSocio(Long numeroSocio); // Comprobar unicidad del num de socio
+
+    @Query("SELECT MAX(s.numeroSocio) FROM Socio s")
+    Long findUltimoNumeroSocio();
 }
