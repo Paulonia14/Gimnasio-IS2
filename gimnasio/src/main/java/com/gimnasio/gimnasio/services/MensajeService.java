@@ -19,7 +19,6 @@ public class MensajeService {
 
     public void crearMensaje(String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
         try {
-            validar(titulo, texto, tipoMensaje);
             Mensaje mensaje = new Mensaje();
             mensaje.setTitulo(titulo);
             mensaje.setTexto(texto);
@@ -31,21 +30,8 @@ public class MensajeService {
         }
     }
 
-    public void validar (String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
-        if(titulo == null || titulo.trim().isEmpty()){
-            throw new Exception("El título no puede estar vacío");
-        }
-        if(texto == null || texto.trim().isEmpty()){
-            throw new Exception("El texto del mensaje no puede estar vacío");
-        }
-        if(tipoMensaje == null){
-            throw new Exception("El tipo de mensaje es obligatorio");
-        }
-    }
-
     public void modificarMensaje(String idUsuario, String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
         try {
-            validar(titulo, texto, tipoMensaje);
             Optional<Mensaje> mensaje = mensajeRepository.findById(idUsuario);
             if (mensaje.isPresent()) {
                 Mensaje mensajeActual = mensaje.get();

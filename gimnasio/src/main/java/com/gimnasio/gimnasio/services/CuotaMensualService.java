@@ -118,7 +118,7 @@ public class CuotaMensualService {
         }
     }
 
-    // Revisar este, ya que fechaDesde y fechaHasta viene desde ValorCuota ? (igual que habría que revisar el repo)
+    // Desde el controlador se transforma mes y anio en fechaDesde
     @Transactional
     public List<CuotaMensual> listarCuotaMensualPorFecha(Date fechaDesde, Date fechaHasta) throws Exception {
         try {

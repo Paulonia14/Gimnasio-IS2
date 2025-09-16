@@ -2,80 +2,41 @@ package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Persona;
 import com.gimnasio.gimnasio.repositories.PersonaRepository;
-import com.gimnasio.gimnasio.services.ServicioBase;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PersonaService implements ServicioBase<Persona> {
+public class PersonaService{
 
     @Autowired
     private PersonaRepository personaRepository;
 
-    @Override
     @Transactional
-    public List<Persona> findAll() throws Exception {
+    public void eliminarPersona(String id) throws Exception{
         try {
-            List<Persona> entities = this.personaRepository.findAll();
-            return entities;
+            Persona persona = buscarPersona(id);
+            persona.setEliminado(true);
+            personaRepository.save(persona);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al eliminar persona: " + e.getMessage());
         }
     }
 
-    @Override
-    @Transactional
-    public Persona findById(String id) throws Exception {
+    public Persona buscarPersona(String id) throws Exception{
         try {
-            Optional<Persona> opt = this.personaRepository.findById(id);
-            return opt.get();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(String id) throws Exception {
-        try {
-            Optional<Persona> opt = this.personaRepository.findById(id);
-            if (opt.isPresent()) {
-                Persona persona = opt.get();
-                persona.setEliminado(!persona.getEliminado());
-                this.personaRepository.save(persona);
+            Optional<Persona> persona = personaRepository.findById(id);
+            if (persona.isPresent()) {
+                Persona personaActual = persona.get();
+                return personaActual;
             } else {
                 throw new Exception("Persona no encontrada");
             }
-            return true;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    /*   Métodos nuevos   */
-
-    @Transactional
-    public List<Persona> findAllByEliminadoFalse() throws Exception {
-        try {
-            List<Persona> entities = this.personaRepository.findAllByEliminadoFalse();
-            return entities;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Transactional
-    public Persona findByIdAndEliminadoFalse(String id) throws Exception {
-        try {
-            Optional<Persona> opt = this.personaRepository.findByIdAndEliminadoFalse(id);
-            return opt.orElse(null);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar persona: " + e.getMessage());
         }
     }
 }

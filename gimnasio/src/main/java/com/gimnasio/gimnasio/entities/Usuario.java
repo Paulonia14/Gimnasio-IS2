@@ -1,6 +1,6 @@
 package com.gimnasio.gimnasio.entities;
 
-import com.gimnasio.gimnasio.enumerations.Roles;
+import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,6 +20,6 @@ public class Usuario {
     private String id;
     private String nombreUsuario;
     private String clave;
-    private Roles rol;
+    private RolUsuario rol;
     private boolean eliminado;
 }

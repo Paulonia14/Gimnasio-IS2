@@ -1,7 +1,7 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Usuario;
-import com.gimnasio.gimnasio.enumerations.Roles;
+import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void crearUsuario(String nombreUsuario, String clave, Roles rol) throws Exception{
+    @Transactional
+    public void crearUsuario(String nombreUsuario, String clave, RolUsuario rol) throws Exception{
         try {
-            validar(nombreUsuario, clave, rol);
             Usuario user = new Usuario();
             user.setNombreUsuario(nombreUsuario);
             user.setClave(clave);
@@ -29,13 +29,10 @@ public class UsuarioService {
         }
     }
 
-    public void validar (String nombreUsuario, String clave, Roles rol) throws Exception{
 
-    }
-
-    public void modificarUsuario(String idUsuario, String nombreUsuario, String clave, Roles rol) throws Exception{
+    @Transactional
+    public void modificarUsuario(String idUsuario, String nombreUsuario, String clave, RolUsuario rol) throws Exception{
         try {
-            validar(nombreUsuario, clave, rol);
             Optional<Usuario> user = usuarioRepository.findById(idUsuario);
             if (user.isPresent()) {
                 Usuario userAct = user.get();
@@ -50,7 +47,7 @@ public class UsuarioService {
             throw new Exception("Error al modificar usuario: " + e.getMessage());
         }
     }
-
+    @Transactional
     public void eliminarUsuario(String idUsuario) throws Exception{
         try {
             Usuario user = buscarUsuario(idUsuario);
@@ -60,6 +57,7 @@ public class UsuarioService {
             throw new Exception("Error al eliminar usuario: " + e.getMessage());
         }
     }
+
     public Usuario buscarUsuario(String idUsuario) throws Exception{
         try {
             Optional<Usuario> user = usuarioRepository.findById(idUsuario);

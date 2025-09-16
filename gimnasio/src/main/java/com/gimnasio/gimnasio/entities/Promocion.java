@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Table(name = "promociones")
 public class Promocion extends Mensaje{
-    private Date fechaEnvioPromocion;
+    private Date fechaEnvioPromocion; // Esta fecha tiene que ser en el futuro (o en el mismo momento tambien?)
     @Min(value = 0, message = "La cantidad de socios enviados no puede ser negativa")
     private long cantidadSociosEnviados;
 }
