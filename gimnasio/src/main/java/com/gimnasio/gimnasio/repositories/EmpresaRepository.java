@@ -19,4 +19,7 @@ public interface EmpresaRepository extends JpaRepository<Empresa, String> {
     @Query(value = "SELECT * FROM empresas WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Empresa> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM empresas WHERE nombre = :nombre AND eliminado = false", nativeQuery = true)
+    Optional<Empresa> findByNombreAndEliminadoFalse(@Param("nombre") String nombre);
+
 }

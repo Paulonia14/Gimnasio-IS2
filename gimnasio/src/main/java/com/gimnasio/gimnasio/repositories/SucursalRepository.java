@@ -19,4 +19,7 @@ public interface SucursalRepository extends JpaRepository<Sucursal, String> {
     @Query(value = "SELECT * FROM sucursale WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Sucursal> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM sucursales WHERE nombre = :nombre AND eliminado = false", nativeQuery = true)
+    Optional<Sucursal> findByNombreAndEliminadoFalse(@Param("nombre") String nombre);
+
 }

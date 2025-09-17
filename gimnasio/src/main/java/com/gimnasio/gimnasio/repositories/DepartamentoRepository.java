@@ -19,4 +19,7 @@ public interface DepartamentoRepository extends JpaRepository<Departamento, Stri
     @Query(value = "SELECT * FROM departamentos WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Departamento> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM departamentos WHERE nombre = :nombre AND eliminado = false", nativeQuery = true)
+    Optional<Departamento> findByNombreAndEliminadoFalse(@Param("nombre") String nombre);
+
 }

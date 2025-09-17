@@ -18,4 +18,7 @@ public interface ProvinciaRepository extends JpaRepository<Provincia, String> {
     @Query(value = "SELECT * FROM provincias WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Provincia> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM provincias WHERE nombre = :nombre AND eliminado = false", nativeQuery = true)
+    Optional<Provincia> findByNombreAndEliminadoFalse(@Param("nombre") String nombre);
+
 }

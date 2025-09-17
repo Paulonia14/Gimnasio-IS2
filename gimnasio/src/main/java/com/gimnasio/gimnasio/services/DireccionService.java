@@ -1,7 +1,9 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Direccion;
+import com.gimnasio.gimnasio.entities.Localidad;
 import com.gimnasio.gimnasio.repositories.DireccionRepository;
+import com.gimnasio.gimnasio.repositories.LocalidadRepository;
 import com.gimnasio.gimnasio.services.ServicioBase;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,103 +12,165 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DireccionService implements ServicioBase<Direccion> {
+public class DireccionService {
 
     @Autowired
     private DireccionRepository direccionRepository;
 
-    @Override
+    @Autowired
+    private LocalidadRepository localidadRepository;
+
     @Transactional
-    public List<Direccion> findAll() throws Exception {
+    public void crearDireccion(String calle, String numeracion, String barrio, String manzanaPiso, String casaDepartamento, String referencia, String idLocalidad) throws Exception {
         try {
-            List<Direccion> entities = this.direccionRepository.findAll();
-            return entities;
+            validar(calle, numeracion, barrio, manzanaPiso, casaDepartamento, referencia, idLocalidad);
+            Direccion direccion = new Direccion();
+            direccion.setCalle(calle);
+            direccion.setNumeracion(numeracion);
+            direccion.setBarrio(barrio);
+            direccion.setManzanaPiso(manzanaPiso);
+            direccion.setCasaDepartamento(casaDepartamento);
+            direccion.setReferencia(referencia);
+            direccion.setEliminado(false);
+            Localidad localidad = buscarLocalidad(idLocalidad);
+            direccion.setLocalidad(localidad);
+            direccionRepository.save(direccion);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al crear dirección: " + e.getMessage());
         }
     }
 
-    @Override
-    @Transactional
-    public Direccion findById(String id) throws Exception {
-        try {
-            Optional<Direccion> opt = this.direccionRepository.findById(id);
-            return opt.get();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public void validar(String calle, String numeracion, String barrio, String manzanaPiso, String casaDepartamento, String referencia, String idLocalidad) throws Exception {
+        if (calle == null || calle.trim().isEmpty()) {
+            throw new Exception("La calle no puede estar vacía");
+        }
+        if (calle.length() > 100) {
+            throw new Exception("La calle no puede superar los 100 caracteres");
+        }
+        if (numeracion == null || numeracion.trim().isEmpty()) {
+            throw new Exception("La numeración no puede estar vacía");
+        }
+        if (numeracion.length() > 10) {
+            throw new Exception("La numeración no puede superar los 10 caracteres");
+        }
+        if (barrio == null || barrio.trim().isEmpty()) {
+            throw new Exception("El barrio no puede estar vacío");
+        }
+        if (barrio.length() > 50) {
+            throw new Exception("El barrio no puede superar los 50 caracteres");
+        }
+        if (manzanaPiso == null || manzanaPiso.trim().isEmpty()) {
+            throw new Exception("La manzana/piso no puede estar vacía");
+        }
+        if (manzanaPiso.length() > 10) {
+            throw new Exception("La manzana/piso no puede superar los 10 caracteres");
+        }
+        if (casaDepartamento == null || casaDepartamento.trim().isEmpty()) {
+            throw new Exception("La casa/departamento no puede estar vacía");
+        }
+        if (casaDepartamento.length() > 10) {
+            throw new Exception("La casa/departamento no puede superar los 10 caracteres");
+        }
+        if (referencia == null || referencia.trim().isEmpty()) {
+            throw new Exception("La referencia no puede estar vacía");
+        }
+        if (referencia.length() > 100) {
+            throw new Exception("La referencia no puede superar los 100 caracteres");
+        }
+        if (idLocalidad == null || idLocalidad.trim().isEmpty()) {
+            throw new Exception("La localidad es requerida");
+        }
+        Optional<Localidad> localidad = localidadRepository.findById(idLocalidad);
+        if (localidad.isEmpty()) {
+            throw new Exception("Localidad no encontrada");
         }
     }
 
-    @Override
     @Transactional
-    public Direccion saveOne(Direccion entity) throws Exception {
+    public void modificarDireccion(String idDireccion, String calle, String numeracion, String barrio, String manzanaPiso, String casaDepartamento, String referencia, String idLocalidad) throws Exception {
         try {
-            Direccion direccion = this.direccionRepository.save(entity);
-            return direccion;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Direccion updateOne(Direccion entity, String id) throws Exception {
-        try {
-            Optional<Direccion> opt = this.direccionRepository.findById(id);
-            Direccion direccion = opt.get();
-
-            direccion.setCalle(entity.getCalle());
-            direccion.setNumeracion(entity.getNumeracion());
-            direccion.setBarrio(entity.getBarrio());
-            direccion.setManzanaPiso(entity.getManzanaPiso());
-            direccion.setCasaDepartamento(entity.getCasaDepartamento());
-            direccion.setReferencia(entity.getReferencia());
-            direccion.setLocalidad(entity.getLocalidad());
-
-            direccion = this.direccionRepository.save(direccion);
-            return direccion;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(String id) throws Exception {
-        try {
-            Optional<Direccion> opt = this.direccionRepository.findById(id);
-            if (opt.isPresent()) {
-                Direccion direccion = opt.get();
-                direccion.setEliminado(!direccion.getEliminado());
-                this.direccionRepository.save(direccion);
+            validar(calle, numeracion, barrio, manzanaPiso, casaDepartamento, referencia, idLocalidad);
+            Optional<Direccion> direccion = direccionRepository.findById(idDireccion);
+            if (direccion.isPresent()) {
+                Direccion direccionActual = direccion.get();
+                direccionActual.setCalle(calle);
+                direccionActual.setNumeracion(numeracion);
+                direccionActual.setBarrio(barrio);
+                direccionActual.setManzanaPiso(manzanaPiso);
+                direccionActual.setCasaDepartamento(casaDepartamento);
+                direccionActual.setReferencia(referencia);
+                Localidad localidad = buscarLocalidad(idLocalidad);
+                direccionActual.setLocalidad(localidad);
+                direccionRepository.save(direccionActual);
             } else {
                 throw new Exception("Dirección no encontrada");
             }
-            return true;
+        } catch (Exception e) {
+            throw new Exception("Error al modificar dirección: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void eliminarDireccion(String idDireccion) throws Exception {
+        try {
+            Direccion direccion = buscarDireccion(idDireccion);
+            direccion.setEliminado(true);
+            direccionRepository.save(direccion);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar dirección: " + e.getMessage());
+        }
+    }
+
+    public Direccion buscarDireccion(String idDireccion) throws Exception {
+        try {
+            Optional<Direccion> direccion = direccionRepository.findById(idDireccion);
+            if (direccion.isPresent()) {
+                return direccion.get();
+            } else {
+                throw new Exception("Dirección no encontrada");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar dirección: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Direccion> listarDirecciones() throws Exception {
+        try {
+            return direccionRepository.findAll();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    /*   Métodos nuevos   */
-
     @Transactional
-    public List<Direccion> findAllByEliminadoFalse() throws Exception {
+    public List<Direccion> listarDireccionesActivas() throws Exception {
         try {
-            List<Direccion> entities = this.direccionRepository.findAllByEliminadoFalse();
-            return entities;
+            return direccionRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    @Transactional
-    public Direccion findByIdAndEliminadoFalse(String id) throws Exception {
+    public Direccion buscarDireccionPorCalleYNumeracion(String calle, String numeracion) throws Exception {
         try {
-            Optional<Direccion> opt = this.direccionRepository.findByIdAndEliminadoFalse(id);
-            return opt.orElse(null);
+            Optional<Direccion> direccion = direccionRepository.findByCalleAndNumeracionAndEliminadoFalse(calle, numeracion);
+            if (direccion.isPresent()) {
+                return direccion.get();
+            } else {
+                throw new Exception("Dirección no encontrada");
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar dirección: " + e.getMessage());
+        }
+    }
+
+    private Localidad buscarLocalidad(String idLocalidad) throws Exception {
+        Optional<Localidad> localidad = localidadRepository.findById(idLocalidad);
+        if (localidad.isPresent()) {
+            return localidad.get();
+        } else {
+            throw new Exception("Localidad no encontrada");
         }
     }
 }

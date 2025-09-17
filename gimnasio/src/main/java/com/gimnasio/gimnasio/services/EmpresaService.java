@@ -10,96 +10,118 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmpresaService implements ServicioBase<Empresa> {
+public class EmpresaService {
 
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    @Override
     @Transactional
-    public List<Empresa> findAll() throws Exception {
+    public void crearEmpresa(String nombre, String telefono, String correoElectronico) throws Exception {
         try {
-            List<Empresa> entities = this.empresaRepository.findAll();
-            return entities;
+            validar(nombre, telefono, correoElectronico);
+            Empresa empresa = new Empresa();
+            empresa.setNombre(nombre);
+            empresa.setTelefono(telefono);
+            empresa.setCorreoElectronico(correoElectronico);
+            empresa.setEliminado(false);
+            empresaRepository.save(empresa);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al crear empresa: " + e.getMessage());
         }
     }
 
-    @Override
-    @Transactional
-    public Empresa findById(String id) throws Exception {
-        try {
-            Optional<Empresa> opt = this.empresaRepository.findById(id);
-            return opt.get();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public void validar(String nombre, String telefono, String correoElectronico) throws Exception {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new Exception("El nombre no puede estar vacío");
+        }
+        if (nombre.length() > 50) {
+            throw new Exception("El nombre no puede superar los 50 caracteres");
+        }
+        if (telefono == null || telefono.trim().isEmpty()) {
+            throw new Exception("El teléfono no puede estar vacío");
+        }
+        if (!telefono.matches("\\+?[0-9]{7,15}")) {
+            throw new Exception("El teléfono debe contener solo números y puede incluir el prefijo internacional");
+        }
+        if (correoElectronico == null || correoElectronico.trim().isEmpty()) {
+            throw new Exception("El correo electrónico no puede estar vacío");
+        }
+        if (!correoElectronico.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new Exception("El correo electrónico debe tener un formato válido");
         }
     }
 
-    @Override
     @Transactional
-    public Empresa saveOne(Empresa entity) throws Exception {
+    public void modificarEmpresa(String idEmpresa, String nombre, String telefono, String correoElectronico) throws Exception {
         try {
-            Empresa empresa = this.empresaRepository.save(entity);
-            return empresa;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Empresa updateOne(Empresa entity, String id) throws Exception {
-        try {
-            Optional<Empresa> opt = this.empresaRepository.findById(id);
-            Empresa empresa = opt.get();
-            empresa.setNombre(entity.getNombre());
-            empresa.setTelefono(entity.getTelefono());
-            empresa.setCorreoElectronico(entity.getCorreoElectronico());
-
-            empresa = this.empresaRepository.save(empresa);
-            return empresa;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(String id) throws Exception {
-        try {
-            Optional<Empresa> opt = this.empresaRepository.findById(id);
-            if (opt.isPresent()) {
-                Empresa empresa = opt.get();
-                empresa.setEliminado(!empresa.getEliminado());
-                this.empresaRepository.save(empresa);
+            validar(nombre, telefono, correoElectronico);
+            Optional<Empresa> empresa = empresaRepository.findById(idEmpresa);
+            if (empresa.isPresent()) {
+                Empresa empresaActual = empresa.get();
+                empresaActual.setNombre(nombre);
+                empresaActual.setTelefono(telefono);
+                empresaActual.setCorreoElectronico(correoElectronico);
+                empresaRepository.save(empresaActual);
             } else {
                 throw new Exception("Empresa no encontrada");
             }
-            return true;
+        } catch (Exception e) {
+            throw new Exception("Error al modificar empresa: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void eliminarEmpresa(String idEmpresa) throws Exception {
+        try {
+            Empresa empresa = buscarEmpresa(idEmpresa);
+            empresa.setEliminado(true);
+            empresaRepository.save(empresa);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar empresa: " + e.getMessage());
+        }
+    }
+
+    public Empresa buscarEmpresa(String idEmpresa) throws Exception {
+        try {
+            Optional<Empresa> empresa = empresaRepository.findById(idEmpresa);
+            if (empresa.isPresent()) {
+                return empresa.get();
+            } else {
+                throw new Exception("Empresa no encontrada");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar empresa: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Empresa> listarEmpresas() throws Exception {
+        try {
+            return empresaRepository.findAll();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
     @Transactional
-    public List<Empresa> findAllByEliminadoFalse() throws Exception {
+    public List<Empresa> listarEmpresasActivas() throws Exception {
         try {
-            List<Empresa> entities = this.empresaRepository.findAllByEliminadoFalse();
-            return entities;
+            return empresaRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    @Transactional
-    public Empresa findByIdAndEliminadoFalse(String id) throws Exception {
+    public Empresa buscarEmpresaPorNombre(String nombre) throws Exception {
         try {
-            Optional<Empresa> opt = this.empresaRepository.findByIdAndEliminadoFalse(id);
-            return opt.orElse(null);
+            Optional<Empresa> empresa = empresaRepository.findByNombreAndEliminadoFalse(nombre);
+            if (empresa.isPresent()) {
+                return empresa.get();
+            } else {
+                throw new Exception("Empresa no encontrada");
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar empresa: " + e.getMessage());
         }
     }
 }

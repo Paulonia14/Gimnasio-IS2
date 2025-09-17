@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.Pais;
 import com.gimnasio.gimnasio.entities.Provincia;
 import com.gimnasio.gimnasio.repositories.PaisRepository;
 import com.gimnasio.gimnasio.repositories.ProvinciaRepository;
@@ -11,96 +12,125 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProvinciaService implements ServicioBase<Provincia> {
+public class ProvinciaService {
 
     @Autowired
     private ProvinciaRepository provinciaRepository;
 
-    @Override
+    @Autowired
+    private PaisRepository paisRepository;
+
     @Transactional
-    public List<Provincia> findAll() throws Exception {
+    public void crearProvincia(String nombre, String idPais) throws Exception {
         try {
-            List<Provincia> entities = this.provinciaRepository.findAll();
-            return entities;
+            validar(nombre, idPais);
+            Provincia provincia = new Provincia();
+            provincia.setNombre(nombre);
+            provincia.setEliminado(false);
+            Pais pais = buscarPais(idPais);
+            provincia.setPais(pais);
+            provinciaRepository.save(provincia);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al crear provincia: " + e.getMessage());
         }
     }
 
-    @Override
-    @Transactional
-    public Provincia findById(String id) throws Exception {
-        try {
-            Optional<Provincia> opt = this.provinciaRepository.findById(id);
-            return opt.get();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public void validar(String nombre, String idPais) throws Exception {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new Exception("El nombre no puede estar vacío");
+        }
+        if (nombre.length() > 50) {
+            throw new Exception("El nombre no puede superar los 50 caracteres");
+        }
+        if (idPais == null || idPais.trim().isEmpty()) {
+            throw new Exception("El país es requerido");
+        }
+        Optional<Pais> pais = paisRepository.findById(idPais);
+        if (pais.isEmpty()) {
+            throw new Exception("País no encontrado");
         }
     }
 
-    @Override
     @Transactional
-    public Provincia saveOne(Provincia entity) throws Exception {
+    public void modificarProvincia(String idProvincia, String nombre, String idPais) throws Exception {
         try {
-            Provincia provincia = this.provinciaRepository.save(entity);
-            return provincia;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Provincia updateOne(Provincia entity, String id) throws Exception {
-        try {
-            Optional<Provincia> opt = this.provinciaRepository.findById(id);
-            Provincia provincia = opt.get();
-            provincia.setNombre(entity.getNombre());
-            provincia.setPais(entity.getPais());
-            provincia = this.provinciaRepository.save(provincia);
-            return provincia;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(String id) throws Exception {
-        try {
-            Optional<Provincia> opt = this.provinciaRepository.findById(id);
-            if (opt.isPresent()) {
-                Provincia provincia = opt.get();
-                provincia.setEliminado(!provincia.getEliminado());
-                this.provinciaRepository.save(provincia);
+            validar(nombre, idPais);
+            Optional<Provincia> provincia = provinciaRepository.findById(idProvincia);
+            if (provincia.isPresent()) {
+                Provincia provinciaActual = provincia.get();
+                provinciaActual.setNombre(nombre);
+                Pais pais = buscarPais(idPais);
+                provinciaActual.setPais(pais);
+                provinciaRepository.save(provinciaActual);
             } else {
                 throw new Exception("Provincia no encontrada");
             }
-            return true;
+        } catch (Exception e) {
+            throw new Exception("Error al modificar provincia: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void eliminarProvincia(String idProvincia) throws Exception {
+        try {
+            Provincia provincia = buscarProvincia(idProvincia);
+            provincia.setEliminado(true);
+            provinciaRepository.save(provincia);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar provincia: " + e.getMessage());
+        }
+    }
+
+    public Provincia buscarProvincia(String idProvincia) throws Exception {
+        try {
+            Optional<Provincia> provincia = provinciaRepository.findById(idProvincia);
+            if (provincia.isPresent()) {
+                return provincia.get();
+            } else {
+                throw new Exception("Provincia no encontrada");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar provincia: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Provincia> listarProvincias() throws Exception {
+        try {
+            return provinciaRepository.findAll();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    /*   Métodos nuevos   */
-
     @Transactional
-    public List<Provincia> findAllByEliminadoFalse() throws Exception {
+    public List<Provincia> listarProvinciasActivas() throws Exception {
         try {
-            List<Provincia> entities = this.provinciaRepository.findAllByEliminadoFalse();
-            return entities;
+            return provinciaRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    @Transactional
-    public Provincia findByIdAndEliminadoFalse(String id) throws Exception {
+    public Provincia buscarProvinciaPorNombre(String nombre) throws Exception {
         try {
-            Optional<Provincia> opt = this.provinciaRepository.findByIdAndEliminadoFalse(id);
-            return opt.orElse(null);
+            Optional<Provincia> provincia = provinciaRepository.findByNombreAndEliminadoFalse(nombre);
+            if (provincia.isPresent()) {
+                return provincia.get();
+            } else {
+                throw new Exception("Provincia no encontrada");
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar provincia: " + e.getMessage());
+        }
+    }
+
+    private Pais buscarPais(String idPais) throws Exception {
+        Optional<Pais> pais = paisRepository.findById(idPais);
+        if (pais.isPresent()) {
+            return pais.get();
+        } else {
+            throw new Exception("País no encontrado");
         }
     }
 }

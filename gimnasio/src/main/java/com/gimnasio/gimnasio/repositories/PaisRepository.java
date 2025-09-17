@@ -18,4 +18,6 @@ public interface PaisRepository extends JpaRepository<Pais, String> {
     @Query(value = "SELECT * FROM paises WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Pais> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM paises WHERE nombre = :nombre AND eliminado = false", nativeQuery = true)
+    Optional<Pais> findByNombreAndEliminadoFalse(@Param("nombre") String nombre);
 }

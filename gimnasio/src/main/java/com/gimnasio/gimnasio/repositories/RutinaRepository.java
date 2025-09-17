@@ -19,4 +19,7 @@ public interface RutinaRepository extends JpaRepository<Rutina, String> {
     @Query(value = "SELECT * FROM rutinas WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Rutina> findByIdAndEliminadoFalse(@Param("id") String id);
 
+    //rutina actual socio
+    @Query(value = "SELECT * FROM rutinas WHERE fk_socio = :id AND eliminado = false AND estado_rutina = 'EN_PROCESO' ORDER BY fecha_finalizacion DESC LIMIT 1", nativeQuery = true)
+    Optional<Rutina> findRutinaActualBySocio(@Param("id") String id);
 }

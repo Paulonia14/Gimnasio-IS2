@@ -1,6 +1,8 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.Departamento;
 import com.gimnasio.gimnasio.entities.Localidad;
+import com.gimnasio.gimnasio.repositories.DepartamentoRepository;
 import com.gimnasio.gimnasio.repositories.LocalidadRepository;
 import com.gimnasio.gimnasio.services.ServicioBase;
 import jakarta.transaction.Transactional;
@@ -10,97 +12,142 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class LocalidadService implements ServicioBase<Localidad> {
+public class LocalidadService {
 
     @Autowired
     private LocalidadRepository localidadRepository;
 
-    @Override
+    @Autowired
+    private DepartamentoRepository departamentoRepository;
+
     @Transactional
-    public List<Localidad> findAll() throws Exception {
+    public void crearLocalidad(String nombre, String codigoPostal, String idDepartamento) throws Exception {
         try {
-            List<Localidad> entities = this.localidadRepository.findAll();
-            return entities;
+            validar(nombre, codigoPostal, idDepartamento);
+            Localidad localidad = new Localidad();
+            localidad.setNombre(nombre);
+            localidad.setCodigoPostal(codigoPostal);
+            localidad.setEliminado(false);
+            Departamento departamento = buscarDepartamento(idDepartamento);
+            localidad.setDepartamento(departamento);
+            localidadRepository.save(localidad);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al crear localidad: " + e.getMessage());
         }
     }
 
-    @Override
-    @Transactional
-    public Localidad findById(String id) throws Exception {
-        try {
-            Optional<Localidad> opt = this.localidadRepository.findById(id);
-            return opt.get();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public void validar(String nombre, String codigoPostal, String idDepartamento) throws Exception {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new Exception("El nombre no puede estar vacío");
+        }
+        if (nombre.length() > 50) {
+            throw new Exception("El nombre no puede superar los 50 caracteres");
+        }
+        if (codigoPostal == null || codigoPostal.trim().isEmpty()) {
+            throw new Exception("El código postal no puede estar vacío");
+        }
+        if (codigoPostal.length() > 10) {
+            throw new Exception("El código postal no puede superar los 10 caracteres");
+        }
+        if (idDepartamento == null || idDepartamento.trim().isEmpty()) {
+            throw new Exception("El departamento es requerido");
+        }
+        Optional<Departamento> departamento = departamentoRepository.findById(idDepartamento);
+        if (departamento.isEmpty()) {
+            throw new Exception("Departamento no encontrado");
         }
     }
 
-    @Override
     @Transactional
-    public Localidad saveOne(Localidad entity) throws Exception {
+    public void modificarLocalidad(String idLocalidad, String nombre, String codigoPostal, String idDepartamento) throws Exception {
         try {
-            Localidad localidad = this.localidadRepository.save(entity);
-            return localidad;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public Localidad updateOne(Localidad entity, String id) throws Exception {
-        try {
-            Optional<Localidad> opt = this.localidadRepository.findById(id);
-            Localidad localidad = opt.get();
-            localidad.setNombre(entity.getNombre());
-            localidad.setCodigoPostal(entity.getCodigoPostal());
-            localidad.setDepartamento(entity.getDepartamento());
-            localidad = this.localidadRepository.save(localidad);
-            return localidad;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteById(String id) throws Exception {
-        try {
-            Optional<Localidad> opt = this.localidadRepository.findById(id);
-            if (opt.isPresent()) {
-                Localidad localidad = opt.get();
-                localidad.setEliminado(!localidad.getEliminado());
-                this.localidadRepository.save(localidad);
+            validar(nombre, codigoPostal, idDepartamento);
+            Optional<Localidad> localidad = localidadRepository.findById(idLocalidad);
+            if (localidad.isPresent()) {
+                Localidad localidadActual = localidad.get();
+                localidadActual.setNombre(nombre);
+                localidadActual.setCodigoPostal(codigoPostal);
+                Departamento departamento = buscarDepartamento(idDepartamento);
+                localidadActual.setDepartamento(departamento);
+                localidadRepository.save(localidadActual);
             } else {
                 throw new Exception("Localidad no encontrada");
             }
-            return true;
+        } catch (Exception e) {
+            throw new Exception("Error al modificar localidad: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void eliminarLocalidad(String idLocalidad) throws Exception {
+        try {
+            Localidad localidad = buscarLocalidad(idLocalidad);
+            localidad.setEliminado(true);
+            localidadRepository.save(localidad);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar localidad: " + e.getMessage());
+        }
+    }
+
+    public Localidad buscarLocalidad(String idLocalidad) throws Exception {
+        try {
+            Optional<Localidad> localidad = localidadRepository.findById(idLocalidad);
+            if (localidad.isPresent()) {
+                return localidad.get();
+            } else {
+                throw new Exception("Localidad no encontrada");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar localidad: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Localidad> listarLocalidades() throws Exception {
+        try {
+            return localidadRepository.findAll();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    /*   Métodos nuevos   */
-
     @Transactional
-    public List<Localidad> findAllByEliminadoFalse() throws Exception {
+    public List<Localidad> listarLocalidadesActivas() throws Exception {
         try {
-            List<Localidad> entities = this.localidadRepository.findAllByEliminadoFalse();
-            return entities;
+            return localidadRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    @Transactional
-    public Localidad findByIdAndEliminadoFalse(String id) throws Exception {
+    public Localidad buscarLocalidadPorNombre(String nombre) throws Exception {
         try {
-            Optional<Localidad> opt = this.localidadRepository.findByIdAndEliminadoFalse(id);
-            return opt.orElse(null);
+            Optional<Localidad> localidad = localidadRepository.findByNombreAndEliminadoFalse(nombre);
+            if (localidad.isPresent()) {
+                return localidad.get();
+            } else {
+                throw new Exception("Localidad no encontrada");
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar localidad: " + e.getMessage());
+        }
+    }
+
+    private Localidad buscarLocalidadPorCodigoPostal(String codigoPostal) throws Exception {
+        Optional<Localidad> localidad = localidadRepository.findByCodigoPostalAndEliminadoFalse(codigoPostal);
+        if (localidad.isPresent()) {
+            return localidad.get();
+        } else {
+            throw new Exception("Localidad no encontrada");
+        }
+    }
+
+    private Departamento buscarDepartamento(String idDepartamento) throws Exception {
+        Optional<Departamento> departamento = departamentoRepository.findById(idDepartamento);
+        if (departamento.isPresent()) {
+            return departamento.get();
+        } else {
+            throw new Exception("Departamento no encontrado");
         }
     }
 }
