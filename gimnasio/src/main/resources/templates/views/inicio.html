@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Sport Gym</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Fuentes / Iconos -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/jquery.mb.YTPlayer.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+
+<div class="site-wrap">
+
+    <!-- BARRA NAVEGACION -->
+    <nav th:replace="components/navbar :: nav_bar"></nav>
+
+    <!-- HEADER -->
+    <div th:replace="components/header :: header"></div>
+
+    <!-- CONTENIDO PAG -->
+    <div class="site-section section-1">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-lg-3" data-aos="fade-up">
+                    <span class="flaticon-muscle text-primary display-4"></span>
+                    <h4>2,260</h4>
+                    <p>Miembros</p>
+                </div>
+                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <span class="flaticon-stationary-bike text-primary display-4"></span>
+                    <h4>210</h4>
+                    <p>Visitas diarias</p>
+                </div>
+                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <span class="flaticon-banana text-primary display-4"></span>
+                    <h4>28</h4>
+                    <p>Programas saludables</p>
+                </div>
+                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <span class="flaticon-heart text-primary display-4"></span>
+                    <h4>1,920</h4>
+                    <p>Latidos del Corazón</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div th:replace="components/cards :: _cards"></div>
+
+
+    <!-- SCHEDULE --->
+    <div class="site-section section-2" id="schedule-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-5">
+                    <h2 class="section-title">Cronograma</h2>
+                    <p>Horarios de nuestras clases.</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav nav-tabs mb-5 border-bottom-0 justify-content-center tab-list-custom" id="myTab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="monday-tab" data-toggle="tab" href="#monday" role="tab">Monday</a></li>
+                        <li class="nav-item"><a class="nav-link" id="tuesday-tab" data-toggle="tab" href="#tuesday" role="tab">Tuesday</a></li>
+                        <li class="nav-item"><a class="nav-link" id="wednesday-tab" data-toggle="tab" href="#wednesday" role="tab">Wednesday</a></li>
+                        <li class="nav-item"><a class="nav-link" id="thursday-tab" data-toggle="tab" href="#thursday" role="tab">Thursday</a></li>
+                        <li class="nav-item"><a class="nav-link" id="friday-tab" data-toggle="tab" href="#friday" role="tab">Friday</a></li>
+                        <li class="nav-item"><a class="nav-link" id="sunday-tab" data-toggle="tab" href="#sunday" role="tab">Sunday</a></li>
+                    </ul>
+
+                    <div class="tab-content" id="myTabContent">
+                        <!-- Monday -->
+                        <div class="tab-pane fade show active" id="monday" role="tabpanel" aria-labelledby="monday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                <tr><td>Meditation</td><td>10:00am - 10:30am</td><td>James Holmes</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                <tr><td>Weight Lifting</td><td>1:00pm - 2:30pm</td><td>Ben Smith</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Other days (same structure) -->
+                        <div class="tab-pane fade" id="tuesday" role="tabpanel" aria-labelledby="tuesday-tab">
+                            <!-- tabla igual a monday -->
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="wednesday" role="tabpanel" aria-labelledby="wednesday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="thursday" role="tabpanel" aria-labelledby="thursday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="friday" role="tabpanel" aria-labelledby="friday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="sunday" role="tabpanel" aria-labelledby="sunday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAINERS -->
+    <div class="site-section" id="trainer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-5">
+                    <h2 class="section-title">Profesores</h2>
+                    <p>Equipo de entrenadores profesionales.</p>
+                </div>
+            </div>
+            <div class="row large-gutters">
+                <div class="col-md-6 person col-lg-4 mb-4 mb-lg-0">
+                    <img src="images/person_1.jpg" alt="Image" class="img-fluid mb-5">
+                    <h3>James Holmes</h3>
+                    <p class="mb-4 opacity-7">Aerobatics Trainer</p>
+                </div>
+                <div class="col-md-6 person col-lg-4 mb-4 mb-lg-0 mt-5">
+                    <img src="images/person_2.jpg" alt="Image" class="img-fluid mb-5">
+                    <h3>Kelly Green</h3>
+                    <p class="mb-4 opacity-7">Aerobatics Trainer</p>
+                </div>
+                <div class="col-md-6 person col-lg-4 mb-4 mb-lg-0">
+                    <img src="images/person_3.jpg" alt="Image" class="img-fluid mb-5">
+                    <h3>Ben Smith</h3>
+                    <p class="mb-4 opacity-7">Aerobatics Trainer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div th:replace="components/footer :: footer"></div>
+
+</div> <!-- .site-wrap -->
+
+<!-- Script que carga los componentes y luego los scripts necesarios -->
+<script src="js/include-components.js"></script>
+</body>
+</html>
