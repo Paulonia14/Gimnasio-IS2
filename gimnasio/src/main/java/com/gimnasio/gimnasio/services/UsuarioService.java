@@ -89,4 +89,47 @@ public class UsuarioService {
             throw new Exception(e.getMessage());
         }
     }
+
+    @Transactional
+    public Usuario buscarUsuarioPorNombre(String nombreUsuario) throws Exception {
+        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+            throw new Exception("Debe indicar el usuario");
+        }
+        try {
+            return usuarioRepository.findByNombreUsuario(nombreUsuario)
+                    .orElseThrow(() -> new Exception("Usuario no encontrado"));
+        } catch (Exception e) {
+            throw new Exception("Error al buscar usuario por nombre: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public Usuario login(String nombreUsuario, String clave) throws Exception {
+        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+            throw new Exception("Debe indicar el usuario");
+        }
+        if (clave == null || clave.trim().isEmpty()) {
+            throw new Exception("Debe indicar la clave");
+        }
+
+        return usuarioRepository.login(nombreUsuario, clave)
+                .orElseThrow(() -> new Exception("Credenciales inválidas o usuario eliminado"));
+    }
+
+    @Transactional
+    public void modificarClave(String idUsuario, String nuevaClave) throws Exception {
+        if (idUsuario == null || idUsuario.trim().isEmpty()) {
+            throw new Exception("Debe indicar el ID del usuario");
+        }
+        if (nuevaClave == null || nuevaClave.trim().isEmpty()) {
+            throw new Exception("Debe indicar la nueva clave");
+        }
+        try {
+            Usuario user = buscarUsuario(idUsuario);
+            user.setClave(nuevaClave);
+            usuarioRepository.save(user);
+        } catch (Exception e) {
+            throw new Exception("Error al modificar clave: " + e.getMessage());
+        }
+    }
 }
