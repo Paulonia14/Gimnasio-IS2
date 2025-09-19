@@ -20,7 +20,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     Optional<Usuario> findByIdAndEliminadoFalse(@Param("id") String id);
 
     // Buscar por nombre de usuario
-    @Query("SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario")
+    @Query(value = "SELECT * FROM usuarios WHERE nombreUsuario = :nombreUsuario", nativeQuery = true)
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);
 
     // Buscar por nombre y clave NO eliminado

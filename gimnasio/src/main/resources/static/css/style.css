@@ -982,3 +982,13 @@ h1, h2, h3, h4, h5,
   .large-gutters > [class*="col-"] {
     padding-right: 35px;
     padding-left: 35px; }
+
+#login-section label {
+    color: black !important; /* fuerza que sea negro */
+}
+
+#login-section input.form-control {
+    color: black !important;       /* texto que escribís */
+    background-color: #fff;        /* opcional: fondo blanco */
+    border-color: #ced4da;         /* opcional: borde normal de Bootstrap */
+}
