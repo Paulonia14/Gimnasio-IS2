@@ -36,14 +36,14 @@ public class DetalleRutina {
     @Size(max = 100, message = "La actividad no puede superar los 100 caracteres")
     private String actividad;
 
-    @NotNull(message = "El campo es requerido")
+    @NotNull(message = "El campo estado del detalle de la rutina es requerido")
     private EstadoDetalleRutina estadoDetalleRutina;
 
     @NotNull(message = "El campo eliminado no puede ser nulo")
     private Boolean eliminado = false;
 
 
-    @NotNull(message = "El campo es requerido")
+    @NotNull(message = "El campo rutina es requerido")
     @ManyToOne
     @JoinColumn(name = "fk_rutina", nullable = false)
     private Rutina rutina;

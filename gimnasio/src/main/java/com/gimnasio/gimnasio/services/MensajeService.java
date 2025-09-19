@@ -1,7 +1,7 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Mensaje;
-import com.gimnasio.gimnasio.entities.Socio;
+import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.TipoMensaje;
 import com.gimnasio.gimnasio.repositories.MensajeRepository;
 import jakarta.transaction.Transactional;
@@ -17,12 +17,17 @@ public class MensajeService {
     @Autowired
     private MensajeRepository mensajeRepository;
 
-    public void crearMensaje(String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
+    @Autowired
+    private UsuarioService usuarioService;
+
+    public void crearMensaje(String idUsuario, String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
         try {
+            Usuario usuario = usuarioService.buscarUsuario(idUsuario);
             Mensaje mensaje = new Mensaje();
             mensaje.setTitulo(titulo);
             mensaje.setTexto(texto);
             mensaje.getTipoMensaje();
+            mensaje.setUsuario(usuario);
             mensaje.setEliminado(false);
             mensajeRepository.save(mensaje);
         } catch (Exception e) {
@@ -34,10 +39,12 @@ public class MensajeService {
         try {
             Optional<Mensaje> mensaje = mensajeRepository.findById(idUsuario);
             if (mensaje.isPresent()) {
+                Usuario usuario = usuarioService.buscarUsuario(idUsuario);
                 Mensaje mensajeActual = mensaje.get();
                 mensajeActual.setTitulo(titulo);
                 mensajeActual.setTexto(texto);
                 mensajeActual.setTipoMensaje(tipoMensaje);
+                mensajeActual.setUsuario(usuario);
                 mensajeRepository.save(mensajeActual);
             } else {
                 throw new Exception("Mensaje no encontrado");

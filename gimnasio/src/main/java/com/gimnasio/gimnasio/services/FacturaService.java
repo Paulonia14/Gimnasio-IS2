@@ -1,30 +1,48 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.DetalleFactura;
 import com.gimnasio.gimnasio.entities.Factura;
+import com.gimnasio.gimnasio.entities.FormaDePago;
 import com.gimnasio.gimnasio.enumerations.EstadoFactura;
+import com.gimnasio.gimnasio.repositories.DetalleFacturaRepository;
 import com.gimnasio.gimnasio.repositories.FacturaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FacturaService {
     @Autowired
     private FacturaRepository facturaRepository;
 
-    public void crearFactura(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado) throws Exception{
+    @Autowired
+    private DetalleFacturaRepository detalleFacturaRepository;
+
+    public Long obtenerUltimoNumeroFactura() {
+        Long ultimo = facturaRepository.findUltimoNumeroFactura();
+        return (ultimo == null) ? 0L : ultimo;
+    }
+
+
+    public void crearFactura(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado, Collection<DetalleFactura> detalle, FormaDePago formaDePago) throws Exception{
         try {
             validar(numeroFactura, fechaFactura, totalPagado, estado);
             Factura factura = new Factura();
-            factura.setNumeroFactura(numeroFactura); // Ver bien lo de numero factura !!!
+            Long UltimoNumFactura =  obtenerUltimoNumeroFactura();
+            factura.setNumeroFactura(UltimoNumFactura + 1);
             factura.setFechaFactura(fechaFactura);
             factura.setTotalPagado(totalPagado);
             factura.setEstadoFactura(estado);
+            factura.setFormaDePago(formaDePago);
+            factura.setDetalleFactura(new ArrayList<>());
             facturaRepository.save(factura);
+            for (DetalleFactura d : detalle) {
+                d.setFactura(factura);
+                detalleFacturaRepository.save(d);
+                factura.getDetalleFactura().add(d);
+            }
         } catch (Exception e) {
             throw new Exception("Error al crear factura: " + e.getMessage());
         }
@@ -34,13 +52,23 @@ public class FacturaService {
 
     }
 
-    public void modificarFactura(String id, Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado) throws Exception{
+    public void modificarFactura(String id, Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado, Collection<DetalleFactura> detalle) throws Exception{
         try {
             validar(numeroFactura, fechaFactura, totalPagado, estado);
             Optional<Factura> factura = facturaRepository.findById(id);
             if (factura.isPresent()) {
                 Factura facturaActual = factura.get();
-
+                // Se modifica numFactura?
+                facturaActual.setFechaFactura(fechaFactura);
+                facturaActual.setTotalPagado(totalPagado);
+                facturaActual.setEstadoFactura(estado);
+                facturaActual.getDetalleFactura().clear();
+                facturaRepository.save(facturaActual);
+                for (DetalleFactura d : detalle) {
+                    d.setFactura(facturaActual);
+                    detalleFacturaRepository.save(d);
+                    facturaActual.getDetalleFactura().add(d);
+                }
             } else {
                 throw new Exception("Factura no encontrada");
             }
@@ -66,7 +94,7 @@ public class FacturaService {
                 Factura facturaActual = factura.get();
                 return facturaActual;
             } else {
-                throw new Exception("Factura no encontrado");
+                throw new Exception("Factura no encontrada");
             }
         } catch (Exception e) {
             throw new Exception("Error al buscar factura: " + e.getMessage());

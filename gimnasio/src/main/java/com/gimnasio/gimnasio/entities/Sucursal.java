@@ -29,12 +29,12 @@ public class Sucursal {
     @NotNull(message = "El campo eliminado no puede ser nulo")
     private Boolean eliminado = false;
 
-    @NotNull(message = "El campo es requerido")
+    @NotNull(message = "El campo empresa es requerido")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_empresa", nullable = false)
     private Empresa empresa;
 
-    @NotNull(message = "El campo es requerido")
+    @NotNull(message = "El campo dirección es requerido")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_direccion", nullable = false)
     private Direccion direccion;

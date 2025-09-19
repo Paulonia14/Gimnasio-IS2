@@ -16,4 +16,7 @@ public interface FacturaRepository extends JpaRepository<Factura, String> {
     // Encuentra un mensaje activo por id
     @Query(value = "SELECT * FROM facturas WHERE id = :id AND eliminado = false", nativeQuery = true)
     Optional<Factura> findByIdAndEliminadoFalse(@Param("id") String id);
+
+    @Query("SELECT MAX(f.numeroFactura) FROM Factura f")
+    Long findUltimoNumeroFactura();
 }

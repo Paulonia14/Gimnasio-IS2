@@ -1,9 +1,11 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.CuotaMensual;
+import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.enumerations.Meses;
 import com.gimnasio.gimnasio.enumerations.EstadoCuotaMensual;
 import com.gimnasio.gimnasio.repositories.CuotaMensualRepository;
+import com.gimnasio.gimnasio.repositories.SocioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +19,19 @@ public class CuotaMensualService {
     @Autowired
     private CuotaMensualRepository cuotaMensualRepository;
 
-    public void crearCuotaMensual(Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
+    @Autowired
+    private SocioRepository socioRepository;
+
+    public void crearCuotaMensual(Long idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
         try {
             validar(mes, anio, estado, fechaVencimiento);
+            Socio socio = buscarSocio(idSocio);
             CuotaMensual cuota = new CuotaMensual();
             cuota.setMes(mes);
             cuota.setAnio(anio);
             cuota.setEstado(estado);
             cuota.setFechaVencimiento(fechaVencimiento);
+            cuota.setSocio(socio);
             cuota.setEliminado(false);
             cuotaMensualRepository.save(cuota);
         } catch (Exception e) {
@@ -47,16 +54,18 @@ public class CuotaMensualService {
         }
     }
 
-    public void modificarCuotaMensual(String id, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
+    public void modificarCuotaMensual(String id, Long idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
         try {
             validar(mes, anio, estado, fechaVencimiento);
             Optional<CuotaMensual> cuotaMensual = cuotaMensualRepository.findById(id);
             if (cuotaMensual.isPresent()) {
+                Socio socio = buscarSocio(idSocio);
                 CuotaMensual cuotaActual = cuotaMensual.get();
                 cuotaActual.setMes(mes);
                 cuotaActual.setAnio(anio);
                 cuotaActual.setEstado(estado);
                 cuotaActual.setFechaVencimiento(fechaVencimiento);
+                cuotaActual.setSocio(socio);
                 cuotaMensualRepository.save(cuotaActual);
             } else {
                 throw new Exception("Cuota no encontrado");
@@ -87,6 +96,19 @@ public class CuotaMensualService {
             }
         } catch (Exception e) {
             throw new Exception("Error al buscar cuota: " + e.getMessage());
+        }
+    }
+
+    public Socio buscarSocio(Long idSocio) throws Exception{
+        try {
+            Optional<Socio> socio = socioRepository.findById(idSocio);
+            if (socio.isPresent()) {
+                return socio.get();
+            } else {
+                throw new Exception("Socio no encontrado");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar socio: " + e.getMessage());
         }
     }
 

@@ -30,5 +30,10 @@ public class Mensaje {
     @Enumerated(EnumType.STRING)
     private TipoMensaje tipoMensaje;
 
+    @NotNull(message = "El campo es requerido")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="fk_usuario", nullable = false)
+    private Usuario usuario;
+
     private boolean eliminado;
 }
