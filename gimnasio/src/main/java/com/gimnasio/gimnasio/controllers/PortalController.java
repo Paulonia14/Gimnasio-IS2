@@ -1,12 +1,16 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.services.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @Controller
 public class PortalController {
@@ -36,18 +40,38 @@ public class PortalController {
             return "error";
         }
     }
-
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String email,
                                 @RequestParam String password,
-                                Model model) {
+                                Model model,
+                                HttpSession session) {
 
-        // ⚡ Ejemplo básico de validación
-        if (email.equals("admin@sportgym.com") && password.equals("1234")) {
-            return "redirect:/inicio";
+        Optional<Usuario> usuarioOpt = usuarioService.login(email, password);
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            session.setAttribute("usuarioLogueado", usuario);
+
+            switch (usuario.getRol()) {
+                case ADMINISTRATIVO:
+                    return "redirect:/admin/dashboard";
+                case PROFESOR:
+                    return "redirect:/profesor/dashboard";
+                case SOCIO:
+                    return "redirect:/socio/dashboard";
+                default:
+                    model.addAttribute("error", "Rol desconocido");
+                    return "views/login";
+            }
         } else {
-            model.addAttribute("error", "Credenciales inválidas. Intente nuevamente.");
+            model.addAttribute("error", "Email o contraseña incorrectos");
             return "views/login";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }

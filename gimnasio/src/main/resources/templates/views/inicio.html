@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="css/jquery.mb.YTPlayer.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="400">
 
 <div class="site-wrap">
 
@@ -62,7 +62,6 @@
 
     <div th:replace="components/cards :: _cards"></div>
 
-
     <!-- SCHEDULE --->
     <div class="site-section section-2" id="schedule-section">
         <div class="container">
@@ -89,55 +88,63 @@
                         <div class="tab-pane fade show active" id="monday" role="tabpanel" aria-labelledby="monday-tab">
                             <table class="table table-bordered table-custom table-striped ">
                                 <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                <tr><td>Meditation</td><td>10:00am - 10:30am</td><td>James Holmes</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                <tr><td>Weight Lifting</td><td>1:00pm - 2:30pm</td><td>Ben Smith</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Other days (same structure) -->
-                        <div class="tab-pane fade" id="tuesday" role="tabpanel" aria-labelledby="tuesday-tab">
-                            <!-- tabla igual a monday -->
-                            <table class="table table-bordered table-custom table-striped ">
-                                <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade" id="wednesday" role="tabpanel" aria-labelledby="wednesday-tab">
-                            <table class="table table-bordered table-custom table-striped ">
-                                <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade" id="thursday" role="tabpanel" aria-labelledby="thursday-tab">
-                            <table class="table table-bordered table-custom table-striped ">
-                                <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade" id="friday" role="tabpanel" aria-labelledby="friday-tab">
-                            <table class="table table-bordered table-custom table-striped ">
-                                <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade" id="sunday" role="tabpanel" aria-labelledby="sunday-tab">
-                            <table class="table table-bordered table-custom table-striped ">
-                                <tbody>
-                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td><td class="text-center"><a href="#contact-section" class="smoothscroll">Join Now</a></td></tr>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                <tr><td>Meditation</td><td>10:00am - 10:30am</td><td>James Holmes</td></tr>
+                                <tr><td>Weight Lifting</td><td>1:00pm - 2:30pm</td><td>Ben Smith</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
+                        <!-- Tuesday -->
+                        <div class="tab-pane fade" id="tuesday" role="tabpanel" aria-labelledby="tuesday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Wednesday -->
+                        <div class="tab-pane fade" id="wednesday" role="tabpanel" aria-labelledby="wednesday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Thursday -->
+                        <div class="tab-pane fade" id="thursday" role="tabpanel" aria-labelledby="thursday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Friday -->
+                        <div class="tab-pane fade" id="friday" role="tabpanel" aria-labelledby="friday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Sunday -->
+                        <div class="tab-pane fade" id="sunday" role="tabpanel" aria-labelledby="sunday-tab">
+                            <table class="table table-bordered table-custom table-striped ">
+                                <tbody>
+                                <tr><td>Gym</td><td>8:00am - 10:00am</td><td>John Doe</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- TRAINERS -->
     <div class="site-section" id="trainer-section">

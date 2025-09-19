@@ -103,18 +103,18 @@ public class UsuarioService {
         }
     }
 
-    @Transactional
-    public Usuario login(String nombreUsuario, String clave) throws Exception {
-        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
-            throw new Exception("Debe indicar el usuario");
-        }
-        if (clave == null || clave.trim().isEmpty()) {
-            throw new Exception("Debe indicar la clave");
-        }
-
-        return usuarioRepository.login(nombreUsuario, clave)
-                .orElseThrow(() -> new Exception("Credenciales inválidas o usuario eliminado"));
-    }
+//    @Transactional
+//    public Usuario login(String nombreUsuario, String clave) throws Exception {
+//        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+//            throw new Exception("Debe indicar el usuario");
+//        }
+//        if (clave == null || clave.trim().isEmpty()) {
+//            throw new Exception("Debe indicar la clave");
+//        }
+//
+//        return usuarioRepository.login(nombreUsuario, clave)
+//                .orElseThrow(() -> new Exception("Credenciales inválidas o usuario eliminado"));
+//    }
 
     @Transactional
     public void modificarClave(String idUsuario, String nuevaClave) throws Exception {
@@ -131,5 +131,9 @@ public class UsuarioService {
         } catch (Exception e) {
             throw new Exception("Error al modificar clave: " + e.getMessage());
         }
+    }
+
+    public Optional<Usuario> login(String email, String password) {
+        return usuarioRepository.login(email, password);
     }
 }

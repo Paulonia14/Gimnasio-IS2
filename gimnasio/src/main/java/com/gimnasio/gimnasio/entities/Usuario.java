@@ -1,10 +1,7 @@
 package com.gimnasio.gimnasio.entities;
 
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -23,11 +20,13 @@ public class Usuario {
 
     @NotEmpty(message = "El nombre de usuario no puede estar vacío")
     @Size(max = 50, message = "El nombre de usuario no puede superar los 50 caracteres")
+    @Column(name = "nombre_usuario")
     private String nombreUsuario;
 
     @NotEmpty(message = "La clave no puede estar vacía")
     private String clave;
 
+    @Enumerated(EnumType.STRING)
     private RolUsuario rol;
 
     private boolean eliminado;
