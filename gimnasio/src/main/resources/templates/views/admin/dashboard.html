@@ -1,3 +1,4 @@
+<!-- DASHBOARD ADMIN -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,46 +8,106 @@
 
     <!-- Fuentes / Iconos -->
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
-    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" th:href="@{/fonts/icomoon/style.css}">
+    <link rel="stylesheet" th:href="@{/fonts/flaticon/font/flaticon.css}">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/aos.css">
-    <link rel="stylesheet" href="css/jquery.mb.YTPlayer.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/jquery-ui.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <link rel="stylesheet" th:href="@{/css/jquery.fancybox.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/css/aos.css}">
+    <link rel="stylesheet" th:href="@{/css/jquery.mb.YTPlayer.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 
+    <style>
+        main h1, main h2, main h3, main h4, main h5,
+        main .h1, main .h2, main .h3, main .h4, main .h5 {
+            color: #212529 !important;
+        }
+    </style>
 </head>
-<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 <div class="site-wrap">
 
     <!-- BARRA NAVEGACION -->
-    <nav th:replace="components/navbar :: nav_bar"></nav>
+    <nav th:replace="components/navbarAdmin :: nav_bar_adm"></nav>
 
-    <header class="bg-violeta py-1">
-        <div class="intro-section" id="home-section" style="background-color: #ccc;">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
-                        <h1 class="error-title" style="color: red; text-align: center;">HOLA ADMIN</h1>
-                        <h4 class="lead" style="color: white; text-align: center;">VOS TENES EL PODER</h4>
+    <main style="padding-top: 120px; background-color:#f8f9fa; min-height:100vh;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold text-dark">Bienvenido, Admin</h1>
+                <p class="lead text-secondary">Gestiona tu gimnasio de forma rápida y sencilla</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Card Socios -->
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="icon-user display-4 text-primary mb-3"></i>
+                            <h5 class="card-title text-dark">Socios</h5>
+                            <p class="card-text text-muted">Alta, baja y edición de socios.</p>
+                            <a th:href="@{/admin/socios}" class="btn btn-outline-primary btn-sm">Ir</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Usuarios -->
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="icon-users display-4 text-success mb-3"></i>
+                            <h5 class="card-title text-dark">Usuarios</h5>
+                            <p class="card-text text-muted">Gestión de personal y roles.</p>
+                            <a th:href="@{/admin/usuarios}" class="btn btn-outline-success btn-sm">Ir</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Cuotas -->
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="icon-credit-card display-4 text-warning mb-3"></i>
+                            <h5 class="card-title text-dark">Cuotas</h5>
+                            <p class="card-text text-muted">Administrar pagos y vencimientos.</p>
+                            <a th:href="@{/admin/cuotas}" class="btn btn-outline-warning btn-sm">Ir</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="icon-file-text display-4 text-danger mb-3"></i>
+                            <h5 class="card-title text-dark">Deudas</h5>
+                            <p class="card-text text-muted">Seguimiento de cuotas impagas.</p>
+                            <a th:href="@{/admin/deudas}" class="btn btn-outline-danger btn-sm">Ir</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
-</div>
-<!-- FOOTER -->
-<div th:replace="components/footer :: footer"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <div th:replace="components/footerDash :: footer_dash"></div>
 
 </div>
 
-<script src="js/include-components.js"></script>
+<script>
+    function mostrarMensajeLogout(event) {
+        event.preventDefault(); // Evita que salga sin mostrar el mensaje
+        alert("✅ Sesión cerrada con éxito.");
+        window.location.href = "/inicio";
+    }
+</script>
+
+<script th:src="@{/js/include-components.js}"></script>
+
 </body>
 </html>

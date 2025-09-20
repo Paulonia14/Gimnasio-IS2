@@ -9,14 +9,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ProfesorController {
 
-    @GetMapping("/profesor/dashboard")
-    public String profesorDashboard(HttpSession session) {
+    private boolean esProfesor(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        return usuario != null && usuario.getRol() == RolUsuario.PROFESOR;
+    }
 
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            return "redirect:/login";
-        }
-
+    @GetMapping("/profesor/dashboard")
+    public String dashboardProfesor(HttpSession session) {
+        if (!esProfesor(session)) return "redirect:/login";
         return "views/profesor/dashboard";
+    }
+
+    @GetMapping("/profesor/rutinas")
+    public String gestionRutinas(HttpSession session) {
+        if (!esProfesor(session)) return "redirect:/login";
+        return "views/profesor/rutinas";
+    }
+
+    @GetMapping("/profesor/seguimiento")
+    public String seguimientoSocios(HttpSession session) {
+        if (!esProfesor(session)) return "redirect:/login";
+        return "views/profesor/seguimientoSocios";
+    }
+
+    @GetMapping("/profesor/cumpleaños")
+    public String cumpleanios(HttpSession session) {
+        if (!esProfesor(session)) return "redirect:/login";
+        return "views/profesor/cumpleaños";
     }
 }

@@ -9,14 +9,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SocioController {
 
-    @GetMapping("/socio/dashboard")
-    public String socioDashboard(HttpSession session) {
+    private boolean esSocio(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        return usuario != null && usuario.getRol() == RolUsuario.SOCIO;
+    }
 
-        if (usuario == null || usuario.getRol() != RolUsuario.SOCIO) {
-            return "redirect:/login";
-        }
-
+    @GetMapping("/socio/dashboard")
+    public String dashboardSocio(HttpSession session) {
+        if (!esSocio(session)) return "redirect:/login";
         return "views/socio/dashboard";
+    }
+
+    @GetMapping("/socio/rutinas")
+    public String misRutinas(HttpSession session) {
+        if (!esSocio(session)) return "redirect:/login";
+        return "views/socio/rutinas";
+    }
+
+    @GetMapping("/socio/cuotas")
+    public String misCuotas(HttpSession session) {
+        if (!esSocio(session)) return "redirect:/login";
+        return "views/socio/cuotas";
+    }
+
+    @GetMapping("/socio/deuda")
+    public String miDeuda(HttpSession session) {
+        if (!esSocio(session)) return "redirect:/login";
+        return "views/socio/deuda";
+    }
+
+    @GetMapping("/socio/cumpleaños")
+    public String cumpleanos(HttpSession session) {
+        if (!esSocio(session)) return "redirect:/login";
+        return "views/socio/cumpleaños";
     }
 }

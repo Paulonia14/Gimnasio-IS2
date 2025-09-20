@@ -178,9 +178,9 @@
     <!-- FOOTER -->
     <div th:replace="components/footer :: footer"></div>
 
-</div> <!-- .site-wrap -->
+</div>
 
 <!-- Script que carga los componentes y luego los scripts necesarios -->
-<script src="js/include-components.js"></script>
+<script th:src="@{/js/include-components.js}"></script>
 </body>
 </html>
