@@ -32,4 +32,9 @@ public class Usuario {
 
     @NotNull(message = "El campo eliminado no puede ser nulo")
     private boolean eliminado;
+
+    @NotNull(message = "El campo rutina es requerido")
+    @ManyToOne
+    @JoinColumn(name = "fk_persona", nullable = false)
+    private Persona persona;
 }
