@@ -1,5 +1,7 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.Persona;
+import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.repositories.UsuarioRepository;
@@ -140,5 +142,17 @@ public class UsuarioService {
     public Optional<Usuario> login(String email, String password) {
         String claveHash = HashForLogin.hashClave(password);
         return usuarioRepository.login(email, claveHash);
+    }
+
+    public Socio getSocio(Usuario usuario) throws Exception {
+        if (usuario.getRol() != RolUsuario.SOCIO) {
+            throw new Exception("El usuario no es un socio");
+        }
+        Persona persona = usuario.getPersona();
+        if (persona instanceof Socio socio) {
+            return socio;
+        } else {
+            throw new Exception("La persona asociada no es un socio");
+        }
     }
 }

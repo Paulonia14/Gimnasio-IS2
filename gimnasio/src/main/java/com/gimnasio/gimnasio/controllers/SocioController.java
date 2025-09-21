@@ -1,13 +1,27 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.entities.CuotaMensual;
+import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
+import com.gimnasio.gimnasio.services.CuotaMensualService;
+import com.gimnasio.gimnasio.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Controller
 public class SocioController {
+
+    @Autowired
+    private CuotaMensualService cuotaMensualService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     private boolean esSocio(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
@@ -27,8 +41,16 @@ public class SocioController {
     }
 
     @GetMapping("/socio/cuotas")
-    public String misCuotas(HttpSession session) {
+    public String misCuotas(HttpSession session, Model model) {
         if (!esSocio(session)) return "redirect:/login";
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        try {
+            Socio socio = usuarioService.getSocio(usuario);
+            List<CuotaMensual> cuotas = cuotaMensualService.listarCuotasPorSocio(socio.getNumeroSocio());
+            model.addAttribute("cuotas", cuotas);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return "views/socio/cuotas";
     }
 

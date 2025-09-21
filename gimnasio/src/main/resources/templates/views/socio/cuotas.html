@@ -40,7 +40,7 @@
 <div class="site-wrap">
 
     <!-- BARRA NAVEGACION -->
-    <nav><!-- aca iría tu nav socio --></nav>
+    <nav th:replace="components/navbar :: nav_bar"></nav>
 
     <main style="padding-top: 120px; background-color:#f8f9fa; min-height:100vh;">
         <div class="container">
@@ -65,11 +65,30 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <!-- acá se itera sobre las cuotas del socio -->
-
+                            <tr th:each="cuota : ${cuotas}">
+                                <!-- Mes -->
+                                <td th:text="${cuota.mes}"></td>
+                                <!-- Año -->
+                                <td th:text="${cuota.anio}"></td>
+                                <!-- Estado -->
+                                <td>
+                                    <span th:text="${cuota.estado}"
+                                          th:classappend="${cuota.estado.name() == 'PAGADA'} ? 'estado-pagada' : 'estado-adeudada'">
+                                    </span>
+                                </td>
+                                <!-- Fecha Vencimiento -->
+                                <td th:text="${#dates.format(cuota.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+                                <!-- Valor de la cuota -->
+                                <td th:text="${cuota.valorCuota.valorCuota}"></td>
+                                <!-- Acciones -->
+                                <td>
+                                    <a th:if="${cuota.estado.name() == 'ADEUDADA'}"
+                                          th:href="@{/socio/pagar-cuota/{id}(id=${cuota.id})}"
+                                          class="btn btn-sm btn-success">Pagar</a>
+                                </td>
                             </tr>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -79,7 +98,7 @@
     </main>
 
     <!-- FOOTER -->
-    <div><!-- footer acá --></div>
+    <div th:replace="components/footer :: footer"></div>
 
 </div>
 

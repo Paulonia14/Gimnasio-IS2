@@ -22,7 +22,7 @@ public class CuotaMensualService {
     @Autowired
     private SocioRepository socioRepository;
 
-    public void crearCuotaMensual(Long idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
+    public void crearCuotaMensual(String idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
         try {
             validar(mes, anio, estado, fechaVencimiento);
             Socio socio = buscarSocio(idSocio);
@@ -54,7 +54,7 @@ public class CuotaMensualService {
         }
     }
 
-    public void modificarCuotaMensual(String id, Long idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
+    public void modificarCuotaMensual(String id, String idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
         try {
             validar(mes, anio, estado, fechaVencimiento);
             Optional<CuotaMensual> cuotaMensual = cuotaMensualRepository.findById(id);
@@ -99,9 +99,9 @@ public class CuotaMensualService {
         }
     }
 
-    public Socio buscarSocio(Long idSocio) throws Exception{
+    public Socio buscarSocio(String idSocio) throws Exception{
         try {
-            Optional<Socio> socio = socioRepository.findById(idSocio);
+            Optional<Socio> socio = socioRepository.findByIdAndEliminadoFalse(idSocio);
             if (socio.isPresent()) {
                 return socio.get();
             } else {
@@ -154,6 +154,10 @@ public class CuotaMensualService {
         } catch (Exception e) {
             throw new Exception("Error al listar cuotas por fecha: " + e.getMessage());
         }
+    }
+
+    public List<CuotaMensual> listarCuotasPorSocio(Long numSocio) {
+        return cuotaMensualRepository.findBySocioNumeroSocioAndEliminadoFalse(numSocio);
     }
 
 }
