@@ -3,6 +3,7 @@ package com.gimnasio.gimnasio.entities;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +30,6 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private RolUsuario rol;
 
+    @NotNull(message = "El campo eliminado no puede ser nulo")
     private boolean eliminado;
 }

@@ -3,6 +3,7 @@ package com.gimnasio.gimnasio.services;
 import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.repositories.UsuarioRepository;
+import com.gimnasio.gimnasio.utils.HashForLogin;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,8 @@ public class UsuarioService {
         try {
             Usuario user = new Usuario();
             user.setNombreUsuario(nombreUsuario);
-            user.setClave(clave);
+            String claveHash = HashForLogin.hashClave(clave); //Encriptar clave
+            user.setClave(claveHash);
             user.setRol(rol);
             usuarioRepository.save(user);
         } catch (Exception e) {
@@ -37,7 +39,8 @@ public class UsuarioService {
             if (user.isPresent()) {
                 Usuario userAct = user.get();
                 userAct.setNombreUsuario(nombreUsuario);
-                userAct.setClave(clave);
+                String claveHash = HashForLogin.hashClave(clave); //Encriptar clave
+                userAct.setClave(claveHash);
                 userAct.setRol(rol);
                 usuarioRepository.save(userAct);
             } else {
@@ -126,7 +129,8 @@ public class UsuarioService {
         }
         try {
             Usuario user = buscarUsuario(idUsuario);
-            user.setClave(nuevaClave);
+            String claveHash = HashForLogin.hashClave(nuevaClave); //Encriptar clave
+            user.setClave(claveHash);
             usuarioRepository.save(user);
         } catch (Exception e) {
             throw new Exception("Error al modificar clave: " + e.getMessage());
@@ -134,6 +138,7 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> login(String email, String password) {
-        return usuarioRepository.login(email, password);
+        String claveHash = HashForLogin.hashClave(password);
+        return usuarioRepository.login(email, claveHash);
     }
 }

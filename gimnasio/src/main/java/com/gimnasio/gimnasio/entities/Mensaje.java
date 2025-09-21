@@ -22,10 +22,13 @@ public class Mensaje {
     @GeneratedValue
     @UuidGenerator
     private String id;
+
     @NotEmpty(message = "El título no puede estar vacío")
     private String titulo;
+
     @NotEmpty(message = "El texto no puede estar vacío")
     private String texto;
+
     @NotNull(message = "El tipo de mensaje es obligatorio")
     @Enumerated(EnumType.STRING)
     private TipoMensaje tipoMensaje;
@@ -35,5 +38,6 @@ public class Mensaje {
     @JoinColumn(name="fk_usuario", nullable = false)
     private Usuario usuario;
 
+    @NotNull(message = "El campo eliminado no puede ser nulo")
     private boolean eliminado;
 }
