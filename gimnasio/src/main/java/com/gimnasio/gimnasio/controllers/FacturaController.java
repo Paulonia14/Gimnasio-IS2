@@ -1,13 +1,12 @@
 package com.gimnasio.gimnasio.controllers;
 
 import com.gimnasio.gimnasio.entities.Factura;
-import com.gimnasio.gimnasio.repositories.FacturaRepository;
+import com.gimnasio.gimnasio.repositories.CuotaFacturaRepository;
 import com.gimnasio.gimnasio.services.FacturaService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import com.gimnasio.gimnasio.repositories.cuota_facturaRepository;
 
 import java.io.OutputStream;
 
@@ -15,9 +14,9 @@ import java.io.OutputStream;
 public class FacturaController {
 
     private final FacturaService facturaService;
-    private final cuota_facturaRepository cuotaFacturaRepository;
+    private final CuotaFacturaRepository cuotaFacturaRepository;
 
-    public FacturaController(FacturaService facturaService, cuota_facturaRepository cuotaFacturaRepository) {
+    public FacturaController(FacturaService facturaService, CuotaFacturaRepository cuotaFacturaRepository) {
         this.facturaService = facturaService;
         this.cuotaFacturaRepository = cuotaFacturaRepository;
     }

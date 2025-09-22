@@ -12,7 +12,7 @@ import org.hibernate.annotations.UuidGenerator;
 @Getter
 @Setter
 @Table(name="cuota_factura")
-public class cuota_factura {
+public class CuotaFactura {
     @Id
     @GeneratedValue
     @UuidGenerator

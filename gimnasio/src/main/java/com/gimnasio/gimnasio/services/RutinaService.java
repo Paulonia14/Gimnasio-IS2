@@ -261,4 +261,12 @@ public class RutinaService {
             throw new Exception("Profesor no encontrado");
         }
     }
+
+    public List<Rutina> listarRutinasPorSocio(String idSocio) throws Exception {
+        try {
+            return rutinaRepository.findBySocioIdAndEliminadoFalse(idSocio);
+        } catch (Exception e) {
+            throw new Exception("Error al listar rutinas por socio: " + e.getMessage());
+        }
+    }
 }

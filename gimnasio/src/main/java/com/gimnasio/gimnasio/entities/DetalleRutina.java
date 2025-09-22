@@ -37,6 +37,7 @@ public class DetalleRutina {
     private String actividad;
 
     @NotNull(message = "El campo estado del detalle de la rutina es requerido")
+    @Enumerated(EnumType.STRING)
     private EstadoDetalleRutina estadoDetalleRutina;
 
     @NotNull(message = "El campo eliminado no puede ser nulo")
@@ -47,7 +48,6 @@ public class DetalleRutina {
     @ManyToOne
     @JoinColumn(name = "fk_rutina", nullable = false)
     private Rutina rutina;
-
 
 }
 

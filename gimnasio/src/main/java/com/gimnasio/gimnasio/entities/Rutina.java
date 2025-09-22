@@ -33,6 +33,7 @@ public class Rutina {
     private Date fechaFinalizacion;
 
     @NotNull(message = "El campo es requerido")
+    @Enumerated(EnumType.STRING)
     private EstadoRutina estadoRutina;
 
     @NotNull(message = "El campo eliminado no puede ser nulo")
