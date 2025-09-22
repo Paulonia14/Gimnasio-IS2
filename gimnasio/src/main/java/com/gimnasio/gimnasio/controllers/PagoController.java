@@ -1,9 +1,13 @@
 package com.gimnasio.gimnasio.controllers;
 
 import com.gimnasio.gimnasio.entities.CuotaMensual;
+import com.gimnasio.gimnasio.entities.DetalleFactura;
+import com.gimnasio.gimnasio.entities.Factura;
+import com.gimnasio.gimnasio.entities.FormaDePago;
 import com.gimnasio.gimnasio.enumerations.EstadoCuotaMensual;
-import com.gimnasio.gimnasio.services.CuotaMensualService;
-import com.gimnasio.gimnasio.services.PagoService;
+import com.gimnasio.gimnasio.enumerations.TipoPago;
+import com.gimnasio.gimnasio.repositories.cuota_facturaRepository;
+import com.gimnasio.gimnasio.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +21,16 @@ public class PagoController {
 
     private final PagoService testMP;
     private final CuotaMensualService cuotaService;
+    private final FormaDePagoService formaDePagoService;
+    private final FacturaService facturaService;
+    private final cuota_facturaService cuota_facturaService;
 
-    public PagoController(PagoService testMP, CuotaMensualService cuotaService) {
+    public PagoController(PagoService testMP, CuotaMensualService cuotaService, FormaDePagoService formaDePagoService, FacturaService facturaService, cuota_facturaService cuota_facturaService) {
         this.testMP = testMP;
         this.cuotaService = cuotaService;
+        this.formaDePagoService = formaDePagoService;
+        this.facturaService = facturaService;
+        this.cuota_facturaService = cuota_facturaService;
     }
 
     @GetMapping("/pago")
@@ -40,6 +50,16 @@ public class PagoController {
     @GetMapping("/socio/pagar-cuota/{id}")
     public String pagarCuota(@PathVariable String id) throws Exception {
         CuotaMensual cuota = cuotaService.buscarCuotaMensual(id);
+        // creo Forma de pago, factura y detalle de factura
+        FormaDePago nuevaForma = formaDePagoService.crearFormaDePago(TipoPago.BILLETERA_VIRTUAL, "Pago via Mercado Pago");
+        com.gimnasio.gimnasio.entities.DetalleFactura nuevoDetalle = facturaService.crearDetalleFactura(id,cuota);
+
+
+        // va a recibir un 1 pero no importa porque el numero de factura se genera automaticamente
+        Factura factura = facturaService.crearFactura2(1L, new java.util.Date(), cuota.getValorCuota().getValorCuota(), com.gimnasio.gimnasio.enumerations.EstadoFactura.PAGADA, java.util.Collections.singletonList(nuevoDetalle), nuevaForma);
+
+        //crear la relacion cuota-factura
+        cuota_facturaService.crearCuotaFactura(id, factura.getId());
 
         // Cambiar el estado a PAGADA
         cuotaService.modificarCuotaMensual(id, cuota.getSocio().getId(), cuota.getMes(), cuota.getAnio(), EstadoCuotaMensual.PAGADA, cuota.getFechaVencimiento());

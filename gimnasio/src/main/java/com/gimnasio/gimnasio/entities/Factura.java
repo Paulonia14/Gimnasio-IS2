@@ -35,7 +35,7 @@ public class Factura {
     private EstadoFactura estadoFactura;
 
     @NotNull(message = "El campo detalle es requerido")
-    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
     private java.util.List<DetalleFactura> detalleFactura;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -14,13 +14,14 @@ public class FormaDePagoService {
     @Autowired
     private FormaDePagoRepository formaDePagoRepository;
 
-    public void crearFormaDePago(TipoPago tipoPago, String observacion) throws Exception{
+    public FormaDePago crearFormaDePago(TipoPago tipoPago, String observacion) throws Exception{
         try {
             FormaDePago formaPago = new FormaDePago();
             formaPago.setTipoPago(tipoPago);
             formaPago.setObservacion(observacion);
             formaPago.setEliminado(false);
             formaDePagoRepository.save(formaPago);
+            return formaPago;
         } catch (Exception e) {
             throw new Exception("Error al crear la forma de pago: " + e.getMessage());
         }

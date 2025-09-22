@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.CuotaMensual;
 import com.gimnasio.gimnasio.entities.DetalleFactura;
 import com.gimnasio.gimnasio.entities.Factura;
 import com.gimnasio.gimnasio.entities.FormaDePago;
@@ -26,7 +27,7 @@ public class FacturaService {
     }
 
 
-    public void crearFactura(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado, Collection<DetalleFactura> detalle, FormaDePago formaDePago) throws Exception{
+    public void crearFactura(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado, List<DetalleFactura> detalle, FormaDePago formaDePago) throws Exception{
         try {
             validar(numeroFactura, fechaFactura, totalPagado, estado);
             Factura factura = new Factura();
@@ -37,12 +38,8 @@ public class FacturaService {
             factura.setEstadoFactura(estado);
             factura.setFormaDePago(formaDePago);
             factura.setDetalleFactura(new ArrayList<>());
+            factura.setDetalleFactura(detalle);
             facturaRepository.save(factura);
-            for (DetalleFactura d : detalle) {
-                d.setFactura(factura);
-                detalleFacturaRepository.save(d);
-                factura.getDetalleFactura().add(d);
-            }
         } catch (Exception e) {
             throw new Exception("Error al crear factura: " + e.getMessage());
         }
@@ -64,11 +61,6 @@ public class FacturaService {
                 facturaActual.setEstadoFactura(estado);
                 facturaActual.getDetalleFactura().clear();
                 facturaRepository.save(facturaActual);
-                for (DetalleFactura d : detalle) {
-                    d.setFactura(facturaActual);
-                    detalleFacturaRepository.save(d);
-                    facturaActual.getDetalleFactura().add(d);
-                }
             } else {
                 throw new Exception("Factura no encontrada");
             }
@@ -117,6 +109,33 @@ public class FacturaService {
             return this.facturaRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
+        }
+    }
+
+    public DetalleFactura crearDetalleFactura(String id, CuotaMensual cuota){
+        DetalleFactura detalleFactura = new DetalleFactura();
+        detalleFactura.setEliminado(false);
+        detalleFactura.setCuotaMensual(cuota);
+        detalleFacturaRepository.save(detalleFactura);
+        return detalleFactura;
+    }
+
+    public Factura crearFactura2(Long numeroFactura, Date fechaFactura, double totalPagado, EstadoFactura estado, List<DetalleFactura> detalle, FormaDePago formaDePago) throws Exception{
+        try {
+            validar(numeroFactura, fechaFactura, totalPagado, estado);
+            Factura factura = new Factura();
+            Long UltimoNumFactura =  obtenerUltimoNumeroFactura();
+            factura.setNumeroFactura(UltimoNumFactura + 1);
+            factura.setFechaFactura(fechaFactura);
+            factura.setTotalPagado(totalPagado);
+            factura.setEstadoFactura(estado);
+            factura.setFormaDePago(formaDePago);
+            factura.setDetalleFactura(new ArrayList<>());
+            factura.setDetalleFactura(detalle);
+            facturaRepository.save(factura);
+            return factura;
+        } catch (Exception e) {
+            throw new Exception("Error al crear factura: " + e.getMessage());
         }
     }
 

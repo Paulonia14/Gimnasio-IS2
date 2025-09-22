@@ -15,10 +15,10 @@ public class DetalleFactura {
     @UuidGenerator
     private String id;
 
-    @NotNull(message = "El campo factura es requerido")
-    @ManyToOne
-    @JoinColumn(name = "fk_factura", nullable = false)
-    private Factura factura;
+//    @NotNull(message = "El campo factura es requerido")
+//    @ManyToOne
+//    @JoinColumn(name = "fk_factura", nullable = false)
+//    private Factura factura;
 
     @NotNull(message = "El campo cuota es requerido")
     @ManyToOne

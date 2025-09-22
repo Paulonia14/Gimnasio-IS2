@@ -85,6 +85,11 @@
                                     <a th:if="${cuota.estado.name() == 'ADEUDADA'}"
                                           th:href="@{/socio/pagar-cuota/{id}(id=${cuota.id})}"
                                           class="btn btn-sm btn-success">Pagar</a>
+
+                                    <a th:if="${cuota.estado.name() == 'PAGADA'}"
+                                       th:href="@{/socio/factura/{id}(id=${cuota.id})}"
+                                       class="btn btn-sm btn-success">Ver factura</a>
+
                                 </td>
                             </tr>
                             </tbody>
