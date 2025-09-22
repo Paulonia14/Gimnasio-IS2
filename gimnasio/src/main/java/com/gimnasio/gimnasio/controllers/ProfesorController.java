@@ -20,12 +20,6 @@ public class ProfesorController {
         return "views/profesor/dashboard";
     }
 
-    @GetMapping("/profesor/rutinas")
-    public String gestionRutinas(HttpSession session) {
-        if (!esProfesor(session)) return "redirect:/login";
-        return "views/profesor/rutinas";
-    }
-
     @GetMapping("/profesor/seguimiento")
     public String seguimientoSocios(HttpSession session) {
         if (!esProfesor(session)) return "redirect:/login";

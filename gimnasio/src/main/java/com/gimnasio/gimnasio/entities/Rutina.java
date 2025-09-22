@@ -24,13 +24,11 @@ public class Rutina {
     @UuidGenerator
     private String id;
 
-    @NotNull(message = "La fecha  obligatoria")
-    @Past(message = "La fecha debe ser en el pasado")
+    @NotNull(message = "La fecha de inicio es obligatoria")
     @Temporal(TemporalType.DATE)
     private Date fechaInicio;
 
-    @NotNull(message = "La fecha  obligatoria")
-    @Past(message = "La fecha debe ser en el pasado")
+    @NotNull(message = "La fecha de finalizacion es obligatoria")
     @Temporal(TemporalType.DATE)
     private Date fechaFinalizacion;
 

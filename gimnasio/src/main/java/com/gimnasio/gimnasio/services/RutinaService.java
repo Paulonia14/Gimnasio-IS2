@@ -70,9 +70,16 @@ public class RutinaService {
         if (fechaInicio == null || fechaFinalizacion == null) {
             throw new Exception("Las fechas son requeridas");
         }
-        if (fechaFinalizacion.before(fechaInicio)) {
-            throw new Exception("La fecha de finalización debe ser posterior a la de inicio");
+
+        // validacion fechas que no se hacen en la entidad
+        Date hoy = new Date();
+        if (fechaInicio.before(hoy)) {
+            throw new Exception("La fecha de inicio no puede ser anterior a hoy");
         }
+        if (fechaFinalizacion.before(fechaInicio)) {
+            throw new Exception("La fecha de finalización debe ser igual o posterior a la fecha de inicio");
+        }
+
         if (detalle == null || detalle.isEmpty()) {
             throw new Exception("Debe agregar al menos un detalle de rutina");
         }
