@@ -56,11 +56,6 @@ public class AdminController {
         return "views/admin/usuarios";
     }
 
-    @GetMapping("/admin/cuotas")
-    public String gestionCuotas(HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/login";
-        return "views/admin/cuotas";
-    }
 
     @GetMapping("/admin/deudas")
     public String gestionDeudas(HttpSession session) {

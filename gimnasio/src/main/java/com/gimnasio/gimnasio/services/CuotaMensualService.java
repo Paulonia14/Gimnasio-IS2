@@ -150,7 +150,7 @@ public class CuotaMensualService {
             if (fechaDesde.after(fechaHasta)) {
                 throw new Exception("La fecha desde no puede ser después de la fecha hasta");
             }
-            return this.cuotaMensualRepository.findByFechaVencimientoAndEliminadoFalse(fechaDesde, fechaHasta);
+            return this.cuotaMensualRepository.findByFechaVencimientoBetweenAndEliminadoFalse(fechaDesde, fechaHasta);
         } catch (Exception e) {
             throw new Exception("Error al listar cuotas por fecha: " + e.getMessage());
         }
