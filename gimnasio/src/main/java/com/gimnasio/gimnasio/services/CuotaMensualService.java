@@ -2,6 +2,7 @@ package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.CuotaMensual;
 import com.gimnasio.gimnasio.entities.Socio;
+import com.gimnasio.gimnasio.entities.ValorCuota;
 import com.gimnasio.gimnasio.enumerations.Meses;
 import com.gimnasio.gimnasio.enumerations.EstadoCuotaMensual;
 import com.gimnasio.gimnasio.repositories.CuotaMensualRepository;
@@ -22,10 +23,11 @@ public class CuotaMensualService {
     @Autowired
     private SocioRepository socioRepository;
 
-    public void crearCuotaMensual(String idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento) throws Exception{
+    public void crearCuotaMensual(String idSocio, Meses mes, long anio, EstadoCuotaMensual estado, Date fechaVencimiento, ValorCuota valorCuota) throws Exception{
         try {
             validar(mes, anio, estado, fechaVencimiento);
             Socio socio = buscarSocio(idSocio);
+
             CuotaMensual cuota = new CuotaMensual();
             cuota.setMes(mes);
             cuota.setAnio(anio);
@@ -33,6 +35,7 @@ public class CuotaMensualService {
             cuota.setFechaVencimiento(fechaVencimiento);
             cuota.setSocio(socio);
             cuota.setEliminado(false);
+            cuota.setValorCuota(valorCuota);
             cuotaMensualRepository.save(cuota);
         } catch (Exception e) {
             throw new Exception("Error al crear cuota: " + e.getMessage());

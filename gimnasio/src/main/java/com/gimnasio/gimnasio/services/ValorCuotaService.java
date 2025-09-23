@@ -40,4 +40,15 @@ public class ValorCuotaService {
 
         valorCuotaRepository.save(nuevaCuota);
     }
+
+    public double obtenerValorActivo() throws Exception {
+        ValorCuota valor = valorCuotaRepository.findFirstByEliminadoFalseOrderByFechaDesdeDesc()
+                .orElseThrow(() -> new Exception("No hay valor de cuota activo."));
+        return valor.getValorCuota();
+    }
+
+    public ValorCuota obtenerEntidadActiva() throws Exception {
+        return valorCuotaRepository.findFirstByEliminadoFalseOrderByFechaDesdeDesc()
+                .orElseThrow(() -> new Exception("No hay valor de cuota activo."));
+    }
 }
