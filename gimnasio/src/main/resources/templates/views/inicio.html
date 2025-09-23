@@ -28,37 +28,39 @@
     <!-- BARRA NAVEGACION -->
     <nav th:replace="components/navbar :: nav_bar"></nav>
 
-    <!-- HEADER -->
-    <div th:replace="components/header :: header"></div>
+    <main class="pt-5">
 
-    <!-- CONTENIDO PAG -->
-    <div class="site-section section-1">
-        <div class="container">
-            <div class="row mb-5 text-center">
-                <div class="col-lg-3" data-aos="fade-up">
-                    <span class="flaticon-muscle text-primary display-4"></span>
-                    <h4>2,260</h4>
-                    <p>Miembros</p>
-                </div>
-                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                    <span class="flaticon-stationary-bike text-primary display-4"></span>
-                    <h4>210</h4>
-                    <p>Visitas diarias</p>
-                </div>
-                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                    <span class="flaticon-banana text-primary display-4"></span>
-                    <h4>28</h4>
-                    <p>Programas saludables</p>
-                </div>
-                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                    <span class="flaticon-heart text-primary display-4"></span>
-                    <h4>1,920</h4>
-                    <p>Latidos del Corazón</p>
+        <!-- HEADER -->
+        <div th:replace="components/header :: header"></div>
+
+        <!-- CONTENIDO PAG -->
+        <div class="site-section section-1">
+            <div class="container">
+                <div class="row mb-5 text-center">
+                    <div class="col-lg-3" data-aos="fade-up">
+                        <span class="flaticon-muscle text-primary display-4"></span>
+                        <h4>2,260</h4>
+                        <p>Miembros</p>
+                    </div>
+                    <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                        <span class="flaticon-stationary-bike text-primary display-4"></span>
+                        <h4>210</h4>
+                        <p>Visitas diarias</p>
+                    </div>
+                    <div class="col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                        <span class="flaticon-banana text-primary display-4"></span>
+                        <h4>28</h4>
+                        <p>Programas saludables</p>
+                    </div>
+                    <div class="col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                        <span class="flaticon-heart text-primary display-4"></span>
+                        <h4>1,920</h4>
+                        <p>Latidos del Corazón</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </main>
 
     <div th:replace="components/cards :: _cards"></div>
 

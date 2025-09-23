@@ -112,6 +112,7 @@ public class ProvinciaService {
         }
     }
 
+
     public Provincia buscarProvinciaPorNombre(String nombre) throws Exception {
         try {
             Optional<Provincia> provincia = provinciaRepository.findByNombreAndEliminadoFalse(nombre);

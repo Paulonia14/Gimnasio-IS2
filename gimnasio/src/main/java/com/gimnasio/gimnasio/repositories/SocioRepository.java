@@ -22,4 +22,18 @@ public interface SocioRepository extends JpaRepository<Socio, Long> {
 
     @Query("SELECT MAX(s.numeroSocio) FROM Socio s")
     Long findUltimoNumeroSocio();
+
+    @Query(value = """
+    SELECT * 
+    FROM socios s
+    JOIN personas p ON s.id = p.id
+    WHERE p.eliminado = false
+      AND (
+        DATE_FORMAT(p.fecha_nacimiento, '%m-%d')
+        BETWEEN DATE_FORMAT(CURDATE(), '%m-%d')
+            AND DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '%m-%d')
+      )
+    """, nativeQuery = true)
+    List<Socio> findCumpleaniosProximos30Dias();
+
 }

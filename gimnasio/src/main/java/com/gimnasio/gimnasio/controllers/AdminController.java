@@ -1,15 +1,36 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.entities.Promocion;
+import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
+import com.gimnasio.gimnasio.enumerations.TipoMensaje;
+import com.gimnasio.gimnasio.repositories.PromocionRepository;
+import com.gimnasio.gimnasio.repositories.SocioRepository;
+import com.gimnasio.gimnasio.services.PromocionService;
+import com.gimnasio.gimnasio.services.SocioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Date;
+import java.util.List;
 
 @Controller
 public class AdminController {
 
-    // Método auxiliar para validar si el usuario es admin
+    @Autowired
+    private SocioService socioService;
+
+    @Autowired
+    private SocioRepository socioRepository;
+    @Autowired
+    private PromocionService promocionService;
+
     private boolean esAdmin(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         return usuario != null && usuario.getRol() == RolUsuario.ADMINISTRATIVO;
@@ -19,12 +40,6 @@ public class AdminController {
     public String adminDashboard(HttpSession session) {
         if (!esAdmin(session)) return "redirect:/login";
         return "views/admin/dashboard";
-    }
-
-    @GetMapping("/admin/socios")
-    public String gestionSocios(HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/login";
-        return "views/admin/socios";
     }
 
     @GetMapping("/admin/usuarios")
@@ -45,16 +60,56 @@ public class AdminController {
         return "views/admin/deudas";
     }
 
-    @GetMapping("/admin/campañas")
+    @GetMapping("/admin/promociones")
     public String gestionCampanias(HttpSession session) {
         if (!esAdmin(session)) return "redirect:/login";
-        return "views/admin/campañas";
+        return "views/admin/promociones";
     }
+
+    @GetMapping("/admin/promociones/nuevo")
+    public String nuevaPromocion(HttpSession session, Model model) throws Exception {
+        if (!esAdmin(session)) return "redirect:/login";
+
+        Promocion promocion = new Promocion();
+        // setear automáticamente cantidad de socios activos
+        long cantidadActivos = socioService.findAllByEliminadoFalse().size();
+        promocion.setCantidadSociosEnviados(cantidadActivos);
+        // tipo de mensaje fijo como PROMOCION
+        promocion.setTipoMensaje(TipoMensaje.PROMOCION);
+
+        model.addAttribute("promocion", promocion);
+        return "views/admin/promocionesForm"; // tu HTML
+    }
+
+    @PostMapping("/admin/promociones/nuevo")
+    public String guardarPromocion(@ModelAttribute Promocion promocion, HttpSession session) {
+        if (!esAdmin(session)) return "redirect:/login";
+
+        try {
+            // fecha de envío actual
+            Date fechaEnvio = new Date();
+
+            promocionService.crearPromocion(
+                    promocion.getTitulo(),
+                    promocion.getTexto(),
+                    fechaEnvio,
+                    promocion.getCantidadSociosEnviados()
+            );
+
+            return "redirect:/admin/promociones";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "views/admin/promocionesForm";
+        }
+    }
+
 
     @GetMapping("/admin/cumpleaños")
-    public String gestionCumpleanios(HttpSession session) {
+    public String verCumpleanios(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
+
+        List<Socio> cumpleanios = socioRepository.findCumpleaniosProximos30Dias();
+        model.addAttribute("cumpleanios", cumpleanios);
         return "views/admin/cumpleaños";
     }
-
 }
