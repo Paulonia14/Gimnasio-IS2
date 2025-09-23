@@ -36,4 +36,8 @@ public interface SocioRepository extends JpaRepository<Socio, Long> {
     """, nativeQuery = true)
     List<Socio> findCumpleaniosProximos30Dias();
 
+    // Busca socios que cumplan años para mandar el mail
+    @Query("SELECT s FROM Socio s WHERE FUNCTION('DAY', s.fechaNacimiento) = :day AND FUNCTION('MONTH', s.fechaNacimiento) = :month AND s.eliminado = false")
+    List<Socio> findSociosCumpleaniosHoy(@Param("day") int day, @Param("month") int month);
+
 }

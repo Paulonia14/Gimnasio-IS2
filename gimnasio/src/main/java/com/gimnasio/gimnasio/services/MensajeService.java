@@ -20,13 +20,16 @@ public class MensajeService {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private EmailService emailService;
+
     public void crearMensaje(String idUsuario, String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
         try {
             Usuario usuario = usuarioService.buscarUsuario(idUsuario);
             Mensaje mensaje = new Mensaje();
             mensaje.setTitulo(titulo);
             mensaje.setTexto(texto);
-            mensaje.getTipoMensaje();
+            mensaje.setTipoMensaje(tipoMensaje);
             mensaje.setUsuario(usuario);
             mensaje.setEliminado(false);
             mensajeRepository.save(mensaje);
@@ -97,6 +100,39 @@ public class MensajeService {
         }
     }
 
-    // Falta enviarMensaje
+    public Mensaje crearMensajeObj(String idUsuario, String titulo, String texto, TipoMensaje tipoMensaje) throws Exception{
+        try {
+            Usuario usuario = usuarioService.buscarUsuario(idUsuario);
+            Mensaje mensaje = new Mensaje();
+            mensaje.setTitulo(titulo);
+            mensaje.setTexto(texto);
+            mensaje.setTipoMensaje(tipoMensaje);
+            mensaje.setUsuario(usuario);
+            mensaje.setEliminado(false);
+            mensajeRepository.save(mensaje);
+            return mensaje;
+        } catch (Exception e) {
+            throw new Exception("Error al crear mensaje: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void enviarMensaje(String idMensaje) throws Exception {
+        try {
+            Optional<Mensaje> mensajeOpt = mensajeRepository.findById(idMensaje);
+            if (mensajeOpt.isEmpty()) {
+                throw new Exception("Mensaje no encontrado");
+            }
+            Mensaje mensaje = mensajeOpt.get();
+            Usuario usuario = mensaje.getUsuario();
+            if (usuario == null || usuario.getNombreUsuario() == null) {
+                throw new Exception("El mensaje no tiene un usuario válido");
+            }
+            // Enviar mail con el service de email
+            emailService.enviarEmail(usuario.getNombreUsuario(), mensaje.getTitulo(), mensaje.getTexto());
+        } catch (Exception e) {
+            throw new Exception("Error al enviar mensaje: " + e.getMessage());
+        }
+    }
 
 }

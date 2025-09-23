@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.entities.CuotaMensual;
 import com.gimnasio.gimnasio.entities.Promocion;
 import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.entities.Usuario;
@@ -61,8 +62,14 @@ public class AdminController {
     }
 
     @GetMapping("/admin/promociones")
-    public String gestionCampanias(HttpSession session) {
+    public String gestionCampanias(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
+        try {
+            List<Promocion> promociones = promocionService.listarMensajesActivos();
+            model.addAttribute("promociones", promociones);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return "views/admin/promociones";
     }
 
