@@ -1,14 +1,15 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.DTO.DeudaSocioDTO;
 import com.gimnasio.gimnasio.entities.CuotaMensual;
 import com.gimnasio.gimnasio.entities.Promocion;
 import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.enumerations.TipoMensaje;
-import com.gimnasio.gimnasio.repositories.PromocionRepository;
 import com.gimnasio.gimnasio.repositories.SocioRepository;
 import com.gimnasio.gimnasio.repositories.UsuarioRepository;
+import com.gimnasio.gimnasio.services.CuotaMensualService;
 import com.gimnasio.gimnasio.services.NotificacionService;
 import com.gimnasio.gimnasio.services.PromocionService;
 import com.gimnasio.gimnasio.services.SocioService;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -38,6 +39,8 @@ public class AdminController {
     private NotificacionService notificacionService;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private CuotaMensualService cuotaMensualService;
 
     private boolean esAdmin(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
@@ -56,12 +59,37 @@ public class AdminController {
         return "views/admin/usuarios";
     }
 
-
     @GetMapping("/admin/deudas")
-    public String gestionDeudas(HttpSession session) {
+    public String gestionDeudas(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
+
+        List<Socio> socios = new ArrayList<>();
+        try {
+            socios = socioService.findAllByEliminadoFalse();
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Error al obtener socios: " + e.getMessage());
+            return "views/admin/deudas";
+        }
+        List<DeudaSocioDTO> sociosConDeuda = new ArrayList<>();
+
+        for (Socio socio : socios) {
+            List<CuotaMensual> cuotas = cuotaMensualService.listarCuotasAdeudadasPorSocio(socio);
+
+            int mesesDeuda = cuotas.size();
+            double totalDeuda = cuotas.stream()
+                    .mapToDouble(c -> c.getValorCuota().getValorCuota())
+                    .sum();
+
+            if (mesesDeuda > 0) {
+                sociosConDeuda.add(new DeudaSocioDTO(socio, mesesDeuda, totalDeuda));
+            }
+        }
+
+        model.addAttribute("sociosConDeuda", sociosConDeuda);
         return "views/admin/deudas";
     }
+
 
     @GetMapping("/admin/promociones")
     public String gestionCampanias(HttpSession session, Model model) {
@@ -143,14 +171,13 @@ public class AdminController {
         return "views/admin/promocionesForm";
     }
 
-
-
     @GetMapping("/admin/cumpleaños")
     public String verCumpleanios(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
 
         List<Socio> cumpleanios = socioRepository.findCumpleaniosProximos30Dias();
         model.addAttribute("cumpleanios", cumpleanios);
-        return "views/admin/cumpleaños";
+        model.addAttribute("rol","admin");
+        return "views/cumpleaños";
     }
 }

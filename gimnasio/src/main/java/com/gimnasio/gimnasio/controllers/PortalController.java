@@ -26,7 +26,7 @@ public class PortalController {
     @GetMapping("/inicio")
     public String inicio() {
         try {
-            return "views/inicio"; // <-- coincide con tu carpeta templates/views/
+            return "views/inicio";
         } catch (Exception e) {
             return "error";
         }
@@ -35,7 +35,7 @@ public class PortalController {
     @GetMapping("/login")
     public String mostrarLogin() {
         try {
-            return "views/login"; // <-- apunta a templates/views/login.html
+            return "views/login";
         } catch (Exception e) {
             return "error";
         }

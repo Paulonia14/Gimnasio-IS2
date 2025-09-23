@@ -1,9 +1,8 @@
-<!-- DASHBOARD ADMIN -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>DASHBOARD ADMIN</title>
+    <title>CUMPLEAÑOS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Fuentes / Iconos -->
@@ -41,7 +40,8 @@
 <div class="site-wrap">
 
     <!-- BARRA NAVEGACION -->
-    <nav th:replace="components/navbarAdmin :: nav_bar_adm"></nav>
+    <nav th:if="${rol == 'admin'}" th:replace="components/navbarAdmin :: nav_bar_adm"></nav>
+    <nav th:if="${rol == 'profesor'}" th:replace="components/navbarProfe :: nav_bar_prof"></nav>
 
     <main style="padding-top: 120px; background-color:#f8f9fa; min-height:100vh;">
         <div class="container">
@@ -76,6 +76,8 @@
                     </tbody>
                 </table>
             </div>
+            <a th:if="${rol == 'admin'}" th:href="@{/admin/dashboard}" class="btn btn-secondary">Volver</a>
+            <a th:if="${rol == 'profesor'}" th:href="@{/profesor/dashboard}" class="btn btn-secondary">Volver</a>
         </div>
     </main>
     <!-- FOOTER -->

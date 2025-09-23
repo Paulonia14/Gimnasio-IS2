@@ -160,4 +160,8 @@ public class CuotaMensualService {
         return cuotaMensualRepository.findBySocioNumeroSocioAndEliminadoFalse(numSocio);
     }
 
+    public List<CuotaMensual> listarCuotasAdeudadasPorSocio(Socio socio) {
+        return cuotaMensualRepository.findBySocioAndEstadoAndEliminadoFalse(socio, EstadoCuotaMensual.ADEUDADA);
+    }
+
 }

@@ -49,7 +49,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover align-middle">
+                        <table class="table table-striped align-middle">
                             <thead class="table-dark">
                             <tr>
                                 <th scope="col">Nombre y Apellido</th>
@@ -58,14 +58,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!-- Filas con deudas -->
                             <tr th:each="deuda : ${sociosConDeuda}">
-                                <td th:text="${deuda.socio.nombre} + ' ' + ${deuda.socio.apellido}"></td>
-                                <td th:text="${deuda.mesesDeuda}"></td>
-                                <td th:text="${deuda.totalDeuda}"></td>
+
+                                <td th:text="${deuda.numeroSocio + ' - ' + deuda.nombreCompleto}">9 - Nahman, Martina</td>
+                                <td th:text="${deuda.mesesDeuda}">0</td>
+                                <td th:text="${deuda.totalDeuda}" th:classappend="${deuda.totalDeuda > 0} ? 'estado-adeudada' : ''">0.0</td>
                             </tr>
 
-                            <!-- Mensaje si no hay socios con deuda -->
                             <tr th:if="${#lists.isEmpty(sociosConDeuda)}">
                                 <td colspan="3" class="text-center fw-bold">No hay socios con deuda.</td>
                             </tr>

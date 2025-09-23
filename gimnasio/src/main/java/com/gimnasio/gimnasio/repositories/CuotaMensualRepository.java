@@ -1,6 +1,7 @@
 package com.gimnasio.gimnasio.repositories;
 
 import com.gimnasio.gimnasio.entities.CuotaMensual;
+import com.gimnasio.gimnasio.entities.Socio;
 import com.gimnasio.gimnasio.enumerations.EstadoCuotaMensual;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +28,8 @@ public interface CuotaMensualRepository extends JpaRepository<CuotaMensual, Stri
             @Param("fechaHasta") Date fechaHasta);
 
     List<CuotaMensual> findBySocioNumeroSocioAndEliminadoFalse(Long numeroSocio);
+
+    List<CuotaMensual> findBySocioAndEstadoAndEliminadoFalse(Socio socio, EstadoCuotaMensual estado);
 
 
 }
