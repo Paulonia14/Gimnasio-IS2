@@ -70,7 +70,7 @@ public class NotificacionService {
 
     public void enviarPromocion(String promo) {
         String asunto = "🔥¡Nueva promoción en Sport Gym!🔥";
-        String cuerpo = "¡¡¡Hola!!!,\n\n" + "Te informamos que tenemos una nueva promoción:\n\n" + promo + "\n\n" + "Vení y aprovecha esta increíble PROMO.\n\n" + "Atentamente: Sport Gym.";
+        String cuerpo = "¡¡¡Hola!!!,\n\n" + "Te informamos que tenemos una nueva 🤑💯promoción🤑💯 de:\n\n" + promo + "\n\n" + "Vení y aprovecha esta increíble PROMO.\n\n" + "Atentamente: Sport Gym.";
 
         List<Socio> socios = socioRepository.findAllByEliminadoFalse();
 
@@ -90,10 +90,8 @@ public class NotificacionService {
 
     @Scheduled(cron = "0 0 0 * * *", zone = "America/Argentina/Buenos_Aires")
     public void enviarPromocionesProgramadas() {
-        LocalDate hoy = LocalDate.now();
-        Date inicio = Date.from(hoy.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date fin = Date.from(hoy.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant());
-        List<Promocion> promociones = promocionRepository.findByFechaEnvioPromocionBetween(inicio, fin);
+        LocalDate hoy = LocalDate.now(ZoneId.of("America/Argentina/Buenos_Aires"));
+        List<Promocion> promociones = promocionRepository.findByFechaEnvioPromocion(hoy);
         for (Promocion promo : promociones) {
             try {
                 mensajeService.enviarMensaje(promo.getId());

@@ -1,6 +1,7 @@
 package com.gimnasio.gimnasio.repositories;
 
 import com.gimnasio.gimnasio.entities.Usuario;
+import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,4 +32,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     // Para buscar el id de persona de ese usuario
     @Query("SELECT u FROM Usuario u WHERE u.persona.id = :personaId")
     Optional<Usuario> findByPersonaId(@Param("personaId") String personaId);
+
+    // Busca al primer usuario con ese rol (esto para admin)
+    Optional<Usuario> findFirstByRolAndEliminadoFalse(RolUsuario rol);
 }

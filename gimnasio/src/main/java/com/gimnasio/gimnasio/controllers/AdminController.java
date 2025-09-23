@@ -8,6 +8,8 @@ import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.enumerations.TipoMensaje;
 import com.gimnasio.gimnasio.repositories.PromocionRepository;
 import com.gimnasio.gimnasio.repositories.SocioRepository;
+import com.gimnasio.gimnasio.repositories.UsuarioRepository;
+import com.gimnasio.gimnasio.services.NotificacionService;
 import com.gimnasio.gimnasio.services.PromocionService;
 import com.gimnasio.gimnasio.services.SocioService;
 import jakarta.servlet.http.HttpSession;
@@ -16,8 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -26,11 +30,14 @@ public class AdminController {
 
     @Autowired
     private SocioService socioService;
-
     @Autowired
     private SocioRepository socioRepository;
     @Autowired
     private PromocionService promocionService;
+    @Autowired
+    private NotificacionService notificacionService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     private boolean esAdmin(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
@@ -85,30 +92,62 @@ public class AdminController {
         promocion.setTipoMensaje(TipoMensaje.PROMOCION);
 
         model.addAttribute("promocion", promocion);
-        return "views/admin/promocionesForm"; // tu HTML
+        return "views/admin/promocionesForm";
     }
 
     @PostMapping("/admin/promociones/nuevo")
     public String guardarPromocion(@ModelAttribute Promocion promocion, HttpSession session) {
         if (!esAdmin(session)) return "redirect:/login";
-
         try {
-            // fecha de envío actual
-            Date fechaEnvio = new Date();
 
-            promocionService.crearPromocion(
-                    promocion.getTitulo(),
-                    promocion.getTexto(),
-                    fechaEnvio,
-                    promocion.getCantidadSociosEnviados()
-            );
+            // BUSCAR EL USUARIO ADMIN
+            Usuario admin = usuarioRepository.findFirstByRolAndEliminadoFalse(RolUsuario.ADMINISTRATIVO)
+                    .orElseThrow(() -> new Exception("No se encontró usuario admin"));
 
+            // CONTAR SOCIOS ACTIVOS
+            long cantidadSocios = socioRepository.contarSociosActivos();
+            String titulo = "PROMO";
+            promocionService.crearPromocion(admin.getId(), titulo, promocion.getTexto(), promocion.getFechaEnvioPromocion(), cantidadSocios);
+            LocalDate fechaHoy = LocalDate.now();
+            if (promocion.getFechaEnvioPromocion().equals(fechaHoy)) {
+                notificacionService.enviarPromocion(promocion.getTexto());
+            }
             return "redirect:/admin/promociones";
         } catch (Exception e) {
             e.printStackTrace();
             return "views/admin/promocionesForm";
         }
     }
+
+    @PostMapping("/admin/promociones/editar/{id}")
+    public String editarPromocion(@PathVariable String id, @ModelAttribute Promocion promocion, HttpSession session) {
+        if (!esAdmin(session)) return "redirect:/login";
+        // BUSCAR EL USUARIO ADMIN
+        Usuario admin = usuarioRepository.findFirstByRolAndEliminadoFalse(RolUsuario.ADMINISTRATIVO)
+                .orElseThrow(() -> new RuntimeException("No se encontró usuario admin"));
+
+        // CONTAR SOCIOS ACTIVOS
+        long cantidadSocios = socioRepository.contarSociosActivos();
+
+        String titulo = "PROMO";
+        try {
+            promocionService.modificarPromocion(id, admin.getId(), titulo, promocion.getTexto(), promocion.getFechaEnvioPromocion(), cantidadSocios);
+            return "redirect:/admin/promociones";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "views/admin/promocionesForm";
+        }
+    }
+
+    @GetMapping("/admin/promociones/editar/{id}")
+    public String editarPromocionForm(@PathVariable String id, HttpSession session, Model model) throws Exception {
+        if (!esAdmin(session)) return "redirect:/login";
+
+        Promocion promocion = promocionService.buscarPromocion(id);
+        model.addAttribute("promocion", promocion);
+        return "views/admin/promocionesForm";
+    }
+
 
 
     @GetMapping("/admin/cumpleaños")

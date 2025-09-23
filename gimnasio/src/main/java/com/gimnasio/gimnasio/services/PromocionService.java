@@ -1,12 +1,15 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Promocion;
+import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.TipoMensaje;
 import com.gimnasio.gimnasio.repositories.PromocionRepository;
+import com.gimnasio.gimnasio.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +20,19 @@ public class PromocionService {
     @Autowired
     private PromocionRepository promocionRepository;
 
-    public void crearPromocion(String titulo, String texto, Date fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    public void crearPromocion(String idUsuario, String titulo, String texto, LocalDate fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
         try {
             validar(titulo, texto, fechaEnvioPromocion, cantidadSociosEnviados);
             Promocion promo = new Promocion();
+            Optional<Usuario> user = usuarioRepository.findById(idUsuario);
+            if (user.isEmpty()) {
+                throw new Exception("Usuario no encontrado");
+            }
+            Usuario usuarioActual = user.get();
+            promo.setUsuario(usuarioActual);
             promo.setTitulo(titulo);
             promo.setTexto(texto);
             promo.setTipoMensaje(TipoMensaje.PROMOCION);
@@ -33,7 +45,7 @@ public class PromocionService {
         }
     }
 
-    public void validar (String titulo, String texto, Date fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
+    public void validar (String titulo, String texto, LocalDate fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
         if(titulo == null || titulo.trim().isEmpty()){
             throw new Exception("El título no puede estar vacío");
         }
@@ -48,12 +60,18 @@ public class PromocionService {
         }
     }
 
-    public void modificarPromocion(String idUsuario, String titulo, String texto, Date fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
+    public void modificarPromocion(String id, String idUsuario, String titulo, String texto, LocalDate fechaEnvioPromocion, long cantidadSociosEnviados) throws Exception{
         try {
             validar(titulo, texto, fechaEnvioPromocion, cantidadSociosEnviados);
-            Optional<Promocion> promo = promocionRepository.findById(idUsuario);
+            Optional<Promocion> promo = promocionRepository.findById(id);
             if (promo.isPresent()) {
                 Promocion promoActual = promo.get();
+                Optional<Usuario> user = usuarioRepository.findById(idUsuario);
+                if (user.isEmpty()) {
+                    throw new Exception("Usuario no encontrado");
+                }
+                Usuario usuarioActual = user.get();
+                promoActual.setUsuario(usuarioActual);
                 promoActual.setTitulo(titulo);
                 promoActual.setTexto(texto);
                 promoActual.setTipoMensaje(TipoMensaje.PROMOCION);
