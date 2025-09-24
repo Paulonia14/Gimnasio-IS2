@@ -28,7 +28,6 @@ public class DetalleRutina {
     private String id;
 
     @NotNull(message = "La fecha  obligatoria")
-    @Past(message = "La fecha debe ser en el pasado")
     @Temporal(TemporalType.DATE)
     private Date fecha;
 

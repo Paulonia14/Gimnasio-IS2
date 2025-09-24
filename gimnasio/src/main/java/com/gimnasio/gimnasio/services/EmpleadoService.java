@@ -1,8 +1,12 @@
 package com.gimnasio.gimnasio.services;
 
 import com.gimnasio.gimnasio.entities.Empleado;
+import com.gimnasio.gimnasio.entities.Usuario;
+import com.gimnasio.gimnasio.entities.Persona;
+import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.enumerations.TipoEmpleado;
 import com.gimnasio.gimnasio.repositories.EmpleadoRepository;
+import com.gimnasio.gimnasio.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,10 @@ public class EmpleadoService {
 
     @Autowired
     private EmpleadoRepository empleadoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
 
     @Transactional
     public void crearEmpleado(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
@@ -109,6 +117,16 @@ public class EmpleadoService {
         }
     }
 
+    @Transactional
+    public Empleado buscarPorUsuario(Usuario usuario) throws Exception {
+        if (usuario == null || usuario.getId() == null) {
+            throw new Exception("Usuario no encontrado o inválido");
+        }
+
+        return empleadoRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new Exception("Empleado no encontrado para el usuario logueado"));
+    }
+
 
     @Transactional
     public List<Empleado> findAllByEliminadoFalse() throws Exception {
@@ -164,6 +182,7 @@ public class EmpleadoService {
             throw new Exception("El tipo de empleado es obligatorio.");
         }
     }
-}
 
+    // a rezar
+}
 // falta el asociar

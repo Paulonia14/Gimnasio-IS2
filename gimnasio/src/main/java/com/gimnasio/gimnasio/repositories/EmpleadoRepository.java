@@ -18,5 +18,11 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, String> {
 
     @Query("SELECT s FROM Empleado s WHERE s.id = :id AND s.eliminado = false")
     Optional<Empleado> findByIdAndEliminadoFalse(@Param("id") String id);
+
+    @Query("SELECT s FROM Empleado s WHERE s.id = (SELECT u.persona.id FROM Usuario u WHERE u.id = :id) AND s.eliminado = false")
+    Optional<Empleado> findByUsuarioId(@Param("id") String id);
+
+    @Query("SELECT s FROM Empleado s WHERE s.id = :personaId")
+    Optional<Empleado> findByPersonaId(@Param("personaId") String personaId);
 }
 

@@ -35,4 +35,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
     // Busca al primer usuario con ese rol (esto para admin)
     Optional<Usuario> findFirstByRolAndEliminadoFalse(RolUsuario rol);
+
+    List<Usuario> findByRolAndEliminadoFalse(RolUsuario rol);
 }

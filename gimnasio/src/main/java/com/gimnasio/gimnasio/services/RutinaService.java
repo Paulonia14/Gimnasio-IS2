@@ -49,12 +49,12 @@ public class RutinaService {
             rutina.setSocio(socio);
             rutina.setEmpleado(empleado);
             rutina.setDetalleRutinas(new ArrayList<>());
-            rutinaRepository.save(rutina);
+//            rutinaRepository.save(rutina);
             for (DetalleRutina d : detalle) {
                 d.setRutina(rutina);
-                detalleRutinaRepository.save(d);
                 rutina.getDetalleRutinas().add(d);
             }
+            rutinaRepository.save(rutina);
         } catch (Exception e) {
             throw new Exception("Error al crear rutina: " + e.getMessage());
         }

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,6 +53,6 @@ public class Rutina {
 
     @NotNull(message = "El campo es requerido")
     @OneToMany(mappedBy = "rutina", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<DetalleRutina> detalleRutinas;
+    private List<DetalleRutina> detalleRutinas = new ArrayList<>();
 
 }

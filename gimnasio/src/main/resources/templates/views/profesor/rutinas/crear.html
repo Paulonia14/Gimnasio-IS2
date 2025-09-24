@@ -47,8 +47,8 @@
                 <div class="mb-3">
                     <label for="fechaFinalizacion" class="form-label">Fecha de Finalización</label>
                     <input type="date" class="form-control" id="fechaFinalizacion" name="fechaFinalizacion"
-                           th:min="${rutina.fechaInicio != null ? #dates.format(rutina.fechaInicio, 'yyyy-MM-dd') : #dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
-                           required>
+                           th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+
                 </div>
 
 
