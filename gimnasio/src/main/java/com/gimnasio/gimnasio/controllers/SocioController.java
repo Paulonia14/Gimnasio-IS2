@@ -1,5 +1,6 @@
 package com.gimnasio.gimnasio.controllers;
 
+import com.gimnasio.gimnasio.DTO.DeudaSocioDTO;
 import com.gimnasio.gimnasio.entities.*;
 import com.gimnasio.gimnasio.enumerations.RolUsuario;
 import com.gimnasio.gimnasio.enumerations.EstadoCuotaMensual;
@@ -93,19 +94,21 @@ public class SocioController {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         try {
             Socio socio = usuarioService.getSocio(usuario);
-            List<CuotaMensual> cuotas = cuotaMensualService.listarCuotasPorSocio(socio.getNumeroSocio());
 
-            // Obtener solo las cuotas adeudadas y el total de deuda
-            List<CuotaMensual> deudas = new ArrayList<>();
-            double totalDeuda = 0.0;
-            for (CuotaMensual cuota : cuotas) {
-                if (cuota.getEstado() == EstadoCuotaMensual.ADEUDADA) {
-                    deudas.add(cuota);
-                    totalDeuda += cuota.getValorCuota().getValorCuota();
-                }
-            }
-            model.addAttribute("deudas", deudas);
-            model.addAttribute("totalDeuda", totalDeuda);
+            // Listar solo las cuotas adeudadas
+            List<CuotaMensual> cuotasAdeudadas = cuotaMensualService.listarCuotasAdeudadasPorSocio(socio);
+
+            int mesesDeuda = cuotasAdeudadas.size();
+            double totalDeuda = cuotasAdeudadas.stream()
+                    .mapToDouble(c -> c.getValorCuota().getValorCuota())
+                    .sum();
+
+
+            DeudaSocioDTO deudaDTO = new DeudaSocioDTO(socio, mesesDeuda, totalDeuda);
+
+            model.addAttribute("deuda", deudaDTO);
+            model.addAttribute("cuotasAdeudadas", cuotasAdeudadas);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
