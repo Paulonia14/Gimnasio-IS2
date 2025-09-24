@@ -210,11 +210,21 @@ public class SocioService {
         }
     }
 
-    public List<Socio> obtenerCumpleaniosProximos30Dias() {
-        return socioRepository.findCumpleaniosProximos30Dias();
+    public List<Socio> obtenerCumpleanosProximos30Dias() {
+        LocalDate hoy = LocalDate.now();
+        LocalDate dentroDe30 = hoy.plusDays(30);
+
+        List<Socio> todosLosSocios = socioRepository.findAllNoEliminados();
+
+        return todosLosSocios.stream()
+                .filter(s -> {
+                    LocalDate fn = s.getFechaNacimiento();
+                    LocalDate fnEsteAno = fn.withYear(hoy.getYear());
+                    return !fnEsteAno.isBefore(hoy) && !fnEsteAno.isAfter(dentroDe30);
+                })
+                .toList();
     }
 
 }
-
 
 // falta asociarSocioUsuario

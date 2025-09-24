@@ -60,16 +60,18 @@ public class SocioController {
         if (!esSocio(session)) return "redirect:/login";
         try {
             Rutina rutina = rutinaService.buscarRutina(id);
-            if (rutina == null) {
-                return "redirect:/socio/rutinas";
+
+            Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+            Socio socio = usuarioService.getSocio(usuario);
+            if (!rutina.getSocio().getId().equals(socio.getId())) {
+                return "redirect:/socio/rutinas?error=Acceso denegado";
             }
-            List<DetalleRutina> detalles = rutina.getDetalleRutinas();
 
             model.addAttribute("rutina", rutina);
-            model.addAttribute("detalles", detalles);
+            model.addAttribute("detalles", rutina.getDetalleRutinas());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return "redirect:/socio/rutinas";
+            return "redirect:/socio/rutinas?error=Ocurrió un error";
         }
         return "views/socio/detalle-rutina";
     }
@@ -115,9 +117,4 @@ public class SocioController {
         return "views/socio/deuda";
     }
 
-    @GetMapping("/socio/cumpleaños")
-    public String cumpleanos(HttpSession session) {
-        if (!esSocio(session)) return "redirect:/login";
-        return "views/socio/cumpleaños";
-    }
 }

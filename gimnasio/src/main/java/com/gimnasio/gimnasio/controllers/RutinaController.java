@@ -131,9 +131,11 @@ public class RutinaController {
             model.addAttribute("socios", socioService.findAllByEliminadoFalse());
             return "views/profesor/rutinas/editar";
         } catch (Exception e) {
-            return "redirect:/profesor/rutinas?error=" + e.getMessage();
+            model.addAttribute("error", e.getMessage());
+            return "views/profesor/rutinas/editar";
         }
     }
+
     @PostMapping("/editar/{id}")
     public String editar(
             @PathVariable String id,
@@ -141,6 +143,7 @@ public class RutinaController {
             @RequestParam String fechaInicio,
             @RequestParam String fechaFinalizacion,
             @RequestParam List<String> actividades,
+            @RequestParam EstadoRutina estado,   // 👈 acá
             Model model,
             HttpSession session
     ) {
@@ -172,7 +175,9 @@ public class RutinaController {
                 }
             }
 
-            rutinaService.modificarRutina(id, profesor.getId(), idSocio, inicio, fin, detalles);
+            // Ahora pasás también el estado
+            rutinaService.modificarRutina(id, profesor.getId(), idSocio, inicio, fin, detalles, estado);
+
             return "redirect:/profesor/rutinas?success=Rutina editada con éxito";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

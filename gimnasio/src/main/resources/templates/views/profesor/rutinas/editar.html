@@ -30,10 +30,10 @@
             <!-- Mensaje de error -->
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <form th:action="@{'/profesor/rutinas/editar/' + ${rutina.id}}" method="post">
+            <form th:action="@{'/profesor/rutinas/editar/' + ${rutina.id}}" method="post" th:if="${rutina != null}">
                 <div class="mb-3">
                     <label for="idSocio" class="form-label">Socio</label>
-                    <select class="form-select" id="idSocio" name="idSocio" required>
+                    <select class="form-select" id="idSocio" name="idSocio" required style="color:#212529 !important;">
                         <option th:each="socio : ${socios}"
                                 th:value="${socio.id}"
                                 th:text="${socio.nombre + ' ' + socio.apellido}"
@@ -45,13 +45,15 @@
                 <div class="mb-3">
                     <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
                     <input type="date" class="form-control" id="fechaInicio" name="fechaInicio"
-                           th:value="${#dates.format(rutina.fechaInicio,'yyyy-MM-dd')}" required>
+                           th:value="${#dates.format(rutina.fechaInicio,'yyyy-MM-dd')}" required
+                           style="color:#212529 !important;">
                 </div>
 
                 <div class="mb-3">
                     <label for="fechaFinalizacion" class="form-label">Fecha de Finalización</label>
                     <input type="date" class="form-control" id="fechaFinalizacion" name="fechaFinalizacion"
-                           th:value="${#dates.format(rutina.fechaFinalizacion,'yyyy-MM-dd')}" required>
+                           th:value="${#dates.format(rutina.fechaFinalizacion,'yyyy-MM-dd')}" required
+                           style="color:#212529 !important;">
                 </div>
 
                 <div class="mb-3">
@@ -59,10 +61,21 @@
                     <div id="actividades-container">
                         <div th:each="det : ${rutina.detalleRutinas}">
                             <input type="text" class="form-control mb-2" name="actividades"
-                                   th:value="${det.actividad}">
+                                   th:value="${det.actividad}" required style="color:#212529 !important;">
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="agregarActividad()">Agregar otra actividad</button>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" name="estado" required style="color:#212529 !important;">
+                        <option th:each="estado : ${T(com.gimnasio.gimnasio.enumerations.EstadoRutina).values()}"
+                                th:value="${estado}"
+                                th:text="${estado}"
+                                th:selected="${rutina.estadoRutina == estado}">
+                        </option>
+                    </select>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -83,6 +96,8 @@
         input.name = 'actividades';
         input.className = 'form-control mb-2';
         input.placeholder = 'Nombre de la actividad';
+        input.required = true;
+        input.style.color = '#212529';
         container.appendChild(input);
     }
 </script>

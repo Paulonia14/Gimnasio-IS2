@@ -167,4 +167,13 @@ public class CuotaMensualService {
         return cuotaMensualRepository.findBySocioAndEstadoAndEliminadoFalse(socio, EstadoCuotaMensual.ADEUDADA);
     }
 
+    public List<CuotaMensual> listarCuotasPorMesAnioYSocios(Meses mes, int anio, List<Socio> socios) {
+        return cuotaMensualRepository.findByMesAndAnioAndSocioInAndEliminadoFalse(mes, (long) anio, socios);
+    }
+
+    public boolean existeCuotaPorMesAnio(Meses mes, int anio) {
+        List<CuotaMensual> cuotas = cuotaMensualRepository.findByMesAndAnioAndEliminadoFalse(mes, (long) anio);
+        return cuotas != null && !cuotas.isEmpty();
+    }
+
 }

@@ -18,8 +18,9 @@
 
 <div class="site-wrap">
 
-    <!-- Navbar Profesor -->
-    <nav th:replace="components/navbarProfe :: nav_bar_prof"></nav>
+    <!-- BARRA NAVEGACION -->
+    <nav th:if="${rol == 'admin'}" th:replace="components/navbarAdmin :: nav_bar_adm"></nav>
+    <nav th:if="${rol == 'profesor'}" th:replace="components/navbarProfe :: nav_bar_prof"></nav>
 
     <main style="padding-top: 120px; background-color:#f8f9fa; min-height:100vh;">
         <div class="container">
@@ -62,7 +63,8 @@
                 </ul>
             </div>
 
-            <a th:href="@{/profesor/rutinas}" class="btn btn-secondary">Volver</a>
+            <a th:if="${rol == 'admin'}" th:href="@{/admin/dashboard}" class="btn btn-secondary">Volver</a>
+            <a th:if="${rol == 'profesor'}" th:href="@{/profesor/dashboard}" class="btn btn-secondary">Volver</a>
         </div>
     </main>
 

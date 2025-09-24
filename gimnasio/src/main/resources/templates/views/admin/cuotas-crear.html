@@ -76,6 +76,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-success">Crear Cuota</button>
+                <a th:href="@{/admin/cuotas/menu}" class="btn btn-secondary">Volver al Menu</a>
             </form>
         </div>
 
@@ -92,6 +93,23 @@
         alert("✅ Sesión cerrada con éxito.");
         window.location.href = "/inicio";
     }
+</script>
+
+<script>
+    // Deshabilitar meses anteriores si el año es el actual
+    const mesSelect = document.getElementById('mes');
+    const anioInput = document.getElementById('anio');
+
+    function actualizarMeses() {
+        const mesActual = new Date().getMonth();
+        const anioElegido = parseInt(anioInput.value);
+        for (let i = 0; i < mesSelect.options.length; i++) {
+            mesSelect.options[i].disabled = anioElegido === new Date().getFullYear() && i < mesActual;
+        }
+    }
+
+    anioInput.addEventListener('change', actualizarMeses);
+    window.addEventListener('load', actualizarMeses);
 </script>
 
 <script th:src="@{/js/include-components.js}"></script>

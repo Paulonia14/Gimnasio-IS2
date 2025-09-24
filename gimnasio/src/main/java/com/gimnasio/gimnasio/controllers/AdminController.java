@@ -23,8 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AdminController {
@@ -53,11 +56,6 @@ public class AdminController {
         return "views/admin/dashboard";
     }
 
-    @GetMapping("/admin/usuarios")
-    public String gestionUsuarios(HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/login";
-        return "views/admin/usuarios";
-    }
 
     @GetMapping("/admin/deudas")
     public String gestionDeudas(HttpSession session, Model model) {
@@ -175,9 +173,21 @@ public class AdminController {
     public String verCumpleanios(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
 
-        List<Socio> cumpleanios = socioRepository.findCumpleaniosProximos30Dias();
-        model.addAttribute("cumpleanios", cumpleanios);
-        model.addAttribute("rol","admin");
+        List<Socio> cumpleanios = socioService.obtenerCumpleanosProximos30Dias();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        List<Map<String, String>> cumpleaniosView = new ArrayList<>();
+
+        for (Socio socio : cumpleanios) {
+            Map<String, String> m = new HashMap<>();
+            m.put("nombre", socio.getNombre());
+            m.put("apellido", socio.getApellido());
+            m.put("fechaNacimiento", socio.getFechaNacimiento().format(formatter));
+            cumpleaniosView.add(m);
+        }
+
+        model.addAttribute("cumpleanios", cumpleaniosView);
+        model.addAttribute("rol", "admin");
         return "views/cumpleaños";
     }
 }

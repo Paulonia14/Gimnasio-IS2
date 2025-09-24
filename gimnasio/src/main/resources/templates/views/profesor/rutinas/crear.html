@@ -33,7 +33,7 @@
             <form th:action="@{/profesor/rutinas/crear}" method="post">
                 <div class="mb-3">
                     <label for="idSocio" class="form-label">Socio</label>
-                    <select class="form-select" id="idSocio" name="idSocio" required>
+                    <select class="form-select" id="idSocio" name="idSocio" required style="color:#212529 !important;">
                         <option th:each="socio : ${socios}" th:value="${socio.id}" th:text="${socio.nombre + ' ' + socio.apellido}"></option>
                     </select>
                 </div>
@@ -41,21 +41,22 @@
                 <div class="mb-3">
                     <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
                     <input type="date" class="form-control" id="fechaInicio" name="fechaInicio"
-                           th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+                           th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required
+                           style="color:#212529 !important;">
                 </div>
 
                 <div class="mb-3">
                     <label for="fechaFinalizacion" class="form-label">Fecha de Finalización</label>
                     <input type="date" class="form-control" id="fechaFinalizacion" name="fechaFinalizacion"
-                           th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
-
+                           th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required
+                           style="color:#212529 !important;">
                 </div>
-
 
                 <div class="mb-3">
                     <label class="form-label">Actividades</label>
                     <div id="actividades-container">
-                        <input type="text" class="form-control mb-2" name="actividades" placeholder="Nombre de la actividad" required>
+                        <input type="text" class="form-control mb-2" name="actividades" placeholder="Nombre de la actividad"
+                               required style="color:#212529 !important;">
                     </div>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="agregarActividad()">Agregar otra actividad</button>
                 </div>
@@ -77,6 +78,8 @@
         input.name = 'actividades';
         input.className = 'form-control mb-2';
         input.placeholder = 'Nombre de la actividad';
+        input.required = true;
+        input.style.color = '#212529';
         container.appendChild(input);
     }
 </script>

@@ -92,7 +92,7 @@ public class RutinaService {
     }
 
     @Transactional
-    public void modificarRutina(String id, String idProfesor, String idSocio, Date fechaInicio, Date fechaFinalizacion, Collection<DetalleRutina> detalle) throws Exception {
+    public void modificarRutina(String id, String idProfesor, String idSocio, Date fechaInicio, Date fechaFinalizacion, Collection<DetalleRutina> detalle, EstadoRutina estado) throws Exception {
         try {
             validar(idProfesor, idSocio, fechaInicio, fechaFinalizacion, detalle);
             Optional<Rutina> rutinaOpt = rutinaRepository.findById(id);
@@ -102,13 +102,13 @@ public class RutinaService {
                 rutina.setFechaFinalizacion(fechaFinalizacion);
                 rutina.setSocio(buscarSocio(idSocio));
                 rutina.setEmpleado(buscarEmpleado(idProfesor));
+                rutina.setEstadoRutina(estado);
                 rutina.getDetalleRutinas().clear();
-                rutinaRepository.save(rutina);
                 for (DetalleRutina d : detalle) {
                     d.setRutina(rutina);
-                    detalleRutinaRepository.save(d);
                     rutina.getDetalleRutinas().add(d);
                 }
+                rutinaRepository.save(rutina);
             } else {
                 throw new Exception("Rutina no encontrada");
             }

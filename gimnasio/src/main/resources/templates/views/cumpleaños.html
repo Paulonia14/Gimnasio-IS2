@@ -65,13 +65,9 @@
                     <tr th:each="socio : ${cumpleanios}">
                         <td th:text="${socio.nombre}"></td>
                         <td th:text="${socio.apellido}"></td>
-                        <td th:text="${#dates.format(socio.fechaNacimiento, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${socio.fechaNacimiento}"></td>
 
-<!--                        puedo crear un dto para esto: -->
-<!--                        <td>-->
-<!--                                <span class="badge badge-cumple"-->
-<!--                                      th:text="${socio.diasRestantes} + ' días'"></span>-->
-<!--                        </td>-->
+
                     </tr>
                     </tbody>
                 </table>
