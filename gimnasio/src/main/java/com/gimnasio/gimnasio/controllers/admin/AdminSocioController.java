@@ -6,6 +6,7 @@ import com.gimnasio.gimnasio.enumerations.TipoDocumento;
 import com.gimnasio.gimnasio.repositories.LocalidadRepository;
 import com.gimnasio.gimnasio.repositories.SocioRepository;
 import com.gimnasio.gimnasio.repositories.SucursalRepository;
+import com.gimnasio.gimnasio.repositories.UsuarioRepository;
 import com.gimnasio.gimnasio.services.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
@@ -41,6 +42,8 @@ public class AdminSocioController {
     private SucursalService sucursalService;
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     private boolean esAdmin(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
@@ -102,11 +105,11 @@ public class AdminSocioController {
     }
 
     // esto es para que muestre en los campos lo viejo
-    @GetMapping("/admin/socios/editar")
-    public String editarSocios(@PathVariable("id") Long id, HttpSession session, Model model, RedirectAttributes redirectAttrs) {
+    @GetMapping("/admin/socios/editar/{numeroSocio}")
+    public String editarSocios(@PathVariable("numeroSocio") Long numeroSocio, HttpSession session, Model model, RedirectAttributes redirectAttrs) {
         if (!esAdmin(session)) return "redirect:/login";
         try {
-            Socio socio = socioService.buscarSocio(id);
+            Socio socio = socioService.buscarSocio(numeroSocio);
             model.addAttribute("socio", socio);
             model.addAttribute("tiposDocumentos", TipoDocumento.values());
             model.addAttribute("paises", paisService.listarPaisesActivos());
@@ -134,14 +137,18 @@ public class AdminSocioController {
                     .orElseThrow(() -> new Exception("Localidad con ID " + idLocalidad + " no encontrada"));
 
             // Actualizar dirección
-            Direccion direccion = socio.getDireccion();
-            direccionService.modificarDireccion(direccion.getId(), direccion.getCalle(), direccion.getNumeracion(), direccion.getBarrio(), direccion.getManzanaPiso(), direccion.getCasaDepartamento(), direccion.getReferencia(), localidad.getId());
+            Direccion direccionExistente  = socioExistente.getDireccion();
+            direccionService.modificarDireccion(direccionExistente.getId(), socio.getDireccion().getCalle(), socio.getDireccion().getNumeracion(), socio.getDireccion().getBarrio(), socio.getDireccion().getManzanaPiso(), socio.getDireccion().getCasaDepartamento(), socio.getDireccion().getReferencia(), localidad.getId());
             // Actualizar socio
-            socioService.modificarSocio(socio.getNombre(), socio.getApellido(), socio.getFechaNacimiento(), socio.getTipoDocumento(), socio.getNumeroDocumento(), socio.getTelefono(), socio.getCorreoElectronico(), numeroSocio, direccion, sucursal);
-            // Actualizar clave si es que se ingresó una nueva
-            if (clave != null && !clave.isEmpty()) {
-                usuarioService.modificarClave(socio.getCorreoElectronico(), clave);
-            }
+            socioService.modificarSocio(socio.getNombre(), socio.getApellido(), socio.getFechaNacimiento(), socio.getTipoDocumento(), socio.getNumeroDocumento(), socio.getTelefono(), socio.getCorreoElectronico(), socioExistente.getNumeroSocio(), direccionExistente, sucursal);
+            // Actualizar usuario asociado al socio
+            usuarioRepository.findByPersona(socioExistente).ifPresent(usuario -> {
+                usuario.setNombreUsuario(socio.getCorreoElectronico()); //actualizar mail
+                if (clave != null && !clave.isEmpty()) {
+                    usuario.setClave(clave); // actualizar clave solo si se ingresó una nueva
+                }
+                usuarioRepository.save(usuario);
+            });
             redirectAttrs.addFlashAttribute("success", "Socio actualizado con éxito");
         } catch (Exception e) {
             redirectAttrs.addFlashAttribute("error", "Error al actualizar socio: " + e.getMessage());
@@ -149,21 +156,42 @@ public class AdminSocioController {
         return "redirect:/admin/socios";
     }
 
-
-    // Socios ELiminados
-    @GetMapping("/admin/socios/eliminados")
-    public String sociosEliminados(HttpSession session, Model model) {
+    @GetMapping("/admin/socios/eliminar/{numeroSocio}")
+    public String eliminarSocio(@PathVariable Long numeroSocio, HttpSession session, RedirectAttributes redirectAttrs) {
         if (!esAdmin(session)) return "redirect:/login";
-        List<Socio> sociosEliminados = socioRepository.findAllByEliminadoTrue();
-        model.addAttribute("sociosEliminados", sociosEliminados);
-        return "views/admin/sociosEliminados";
+        try {
+            socioService.deleteById(numeroSocio);
+        } catch (Exception e) {
+        redirectAttrs.addFlashAttribute("error", "Error al eliminar socio: " + e.getMessage());
+        }
+        return "redirect:/admin/socios";
     }
 
-    @GetMapping("/admin/socios/alta/{id}")
-    public String darDeAltaSocio(@PathVariable Long id, HttpSession session) {
+
+    // Socios ELiminados
+    @GetMapping("/admin/socios/sociosEliminados")
+    public String sociosEliminados(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/login";
-        socioRepository.findById(id).ifPresent(socio -> {socio.setEliminado(false);socioRepository.save(socio);});
-        return "redirect:/admin/socios/eliminados";
+        try {
+            List<Socio> sociosEliminados = socioService.findAllByEliminadoTrue();
+            model.addAttribute("sociosEliminados", sociosEliminados);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "views/admin/socios/sociosEliminados";
+    }
+
+    @GetMapping("/admin/socios/alta/{numeroSocio}")
+    public String darDeAltaSocio(@PathVariable Long numeroSocio, HttpSession session) {
+        if (!esAdmin(session)) return "redirect:/login";
+        //socio
+        socioRepository.findByNumeroSocio(numeroSocio).ifPresent(socio -> {
+            socio.setEliminado(false);
+            socioRepository.save(socio);
+            //usuario
+            usuarioRepository.findByPersona(socio).ifPresent(usuario -> {usuario.setEliminado(false);usuarioRepository.save(usuario);});
+        });
+        return "redirect:/admin/socios/sociosEliminados";
     }
 
 }

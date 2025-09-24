@@ -33,7 +33,7 @@
 <div class="site-wrap">
 
     <!-- BARRA NAVEGACION -->
-    <nav th:replace="components/navbarAdmin :: nav_bar_adm"></nav>
+    <nav th:replace="~{components/navbarAdmin :: nav_bar_adm}"></nav>
 
     <main style="padding-top: 120px; background-color:#f8f9fa; min-height:100vh;">
         <div class="container">
@@ -41,7 +41,7 @@
                 <h2>Socios</h2>
                 <div>
                     <a th:href="@{/admin/socios/crear}" class="btn btn-primary">Nuevo Socio</a>
-                    <a th:href="@{/admin/socios/eliminados}" class="btn btn-secondary">Ver Socios Eliminados</a>
+                    <a th:href="@{/admin/socios/sociosEliminados}" class="btn btn-secondary">Ver Socios Eliminados</a>
                 </div>
             </div>
 
@@ -85,7 +85,7 @@
         </div>
     </main>
     <!-- FOOTER -->
-    <div th:replace="components/footerDash :: footer_dash">
+    <div th:replace="~{components/footerDash :: footer_dash}"></div>
 
     </div>
 </div>

@@ -7,6 +7,7 @@ import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.TipoDocumento;
 import com.gimnasio.gimnasio.repositories.DireccionRepository;
 import com.gimnasio.gimnasio.repositories.SocioRepository;
+import com.gimnasio.gimnasio.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,16 @@ public class SocioService {
     @Autowired
     private DireccionRepository direccionRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public Long obtenerUltimoNumeroSocio() {
+        if (socioRepository.contarSocios() == 0) {
+            return 0L;
+        }
         Long ultimo = socioRepository.findUltimoNumeroSocio();
         return (ultimo == null) ? 0L : ultimo;
     }
@@ -109,11 +119,19 @@ public class SocioService {
     @Transactional
     public boolean deleteById(Long numSocio) throws Exception {
         try {
-            Optional<Socio> opt = this.socioRepository.findById(numSocio);
+            Optional<Socio> opt = this.socioRepository.findByNumeroSocio(numSocio);
             if (opt.isPresent()) {
                 Socio socio = opt.get();
                 socio.setEliminado(true);
                 this.socioRepository.save(socio);
+
+                Optional<Usuario> optUsuario = usuarioRepository.findByNombreUsuario(socio.getCorreoElectronico());
+                if (optUsuario.isPresent()) {
+                    Usuario usuario = optUsuario.get();
+                    usuario.setEliminado(true);
+                    usuarioRepository.save(usuario);
+                }
+
             } else {
                 throw new Exception("Socio no encontrado");
             }
@@ -126,7 +144,7 @@ public class SocioService {
 
     public Socio buscarSocio(Long idSocio) throws Exception{
         try {
-            Optional<Socio> socio = socioRepository.findById(idSocio);
+            Optional<Socio> socio = socioRepository.findByNumeroSocio(idSocio);
             if (socio.isPresent()) {
                 Socio socioAct = socio.get();
                 return socioAct;
@@ -151,7 +169,7 @@ public class SocioService {
     @Transactional
     public Socio findById(Long numSocio) throws Exception {
         try {
-            Optional<Socio> opt = this.socioRepository.findById(numSocio);
+            Optional<Socio> opt = this.socioRepository.findByNumeroSocio(numSocio);
             return opt.get();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -166,6 +184,16 @@ public class SocioService {
     public List<Socio> findAllByEliminadoFalse() throws Exception {
         try {
             List<Socio> entities = this.socioRepository.findAllByEliminadoFalse();
+            return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Socio> findAllByEliminadoTrue() throws Exception {
+        try {
+            List<Socio> entities = this.socioRepository.findAllByEliminadoTrue();
             return entities;
         } catch (Exception e) {
             throw new Exception(e.getMessage());

@@ -43,8 +43,14 @@ public interface SocioRepository extends JpaRepository<Socio, Long> {
     @Query("SELECT COUNT(s) FROM Socio s WHERE s.eliminado = false")
     long contarSociosActivos();
 
+    // Contar todos los socios
+    @Query("SELECT COUNT(s) FROM Socio s")
+    long contarSocios();
+
     @Query("SELECT s FROM Socio s WHERE s.eliminado = true")
     List<Socio> findAllByEliminadoTrue();
+
+    Optional<Socio> findByNumeroSocio(Long numeroSocio);
 
 
 }
