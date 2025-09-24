@@ -1,7 +1,9 @@
 package com.gimnasio.gimnasio.DTO;
 
 import com.gimnasio.gimnasio.entities.Socio;
+import lombok.Getter;
 
+@Getter
 public class DeudaSocioDTO {
 
     private String socioId;
@@ -18,23 +20,4 @@ public class DeudaSocioDTO {
         this.totalDeuda = totalDeuda;
     }
 
-    public String getSocioId() {
-        return socioId;
-    }
-
-    public Long getNumeroSocio() {
-        return numeroSocio;
-    }
-
-    public String getNombreCompleto() {
-        return nombreCompleto;
-    }
-
-    public int getMesesDeuda() {
-        return mesesDeuda;
-    }
-
-    public double getTotalDeuda() {
-        return totalDeuda;
-    }
 }
