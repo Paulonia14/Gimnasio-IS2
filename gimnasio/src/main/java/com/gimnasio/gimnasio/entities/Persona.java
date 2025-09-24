@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -35,7 +36,7 @@ public class Persona {
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
     @Temporal(TemporalType.DATE)
-    private Date fechaNacimiento;
+    private LocalDate fechaNacimiento;
 
     @NotNull(message = "El tipo de documento es obligatorio")
     @Enumerated(EnumType.STRING)

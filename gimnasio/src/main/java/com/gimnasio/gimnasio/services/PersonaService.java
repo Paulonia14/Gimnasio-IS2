@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class PersonaService {
     private SucursalRepository sucursalRepository;
 
     @Transactional
-    public void crearPersona(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento,
+    public void crearPersona(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento,
                              String numeroDocumento, String telefono, String correoElectronico,
                              String idDireccion, String idSucursal) throws Exception {
         try {
@@ -54,7 +55,7 @@ public class PersonaService {
         }
     }
 
-    public void validar(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento,
+    public void validar(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento,
                         String numeroDocumento, String telefono, String correoElectronico,
                         String idDireccion, String idSucursal) throws Exception {
         if (nombre == null || nombre.trim().isEmpty()) {
@@ -72,9 +73,7 @@ public class PersonaService {
         if (fechaNacimiento == null) {
             throw new Exception("La fecha de nacimiento es obligatoria");
         }
-        if (fechaNacimiento.after(new Date())) {
-            throw new Exception("La fecha de nacimiento debe ser en el pasado");
-        }
+
         if (tipoDocumento == null) {
             throw new Exception("El tipo de documento es obligatorio");
         }
@@ -111,7 +110,7 @@ public class PersonaService {
     }
 
     @Transactional
-    public void modificarPersona(String idPersona, String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento,
+    public void modificarPersona(String idPersona, String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento,
                                  String numeroDocumento, String telefono, String correoElectronico,
                                  String idDireccion, String idSucursal) throws Exception {
         try {

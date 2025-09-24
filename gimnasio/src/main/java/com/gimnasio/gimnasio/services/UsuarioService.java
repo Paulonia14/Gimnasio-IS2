@@ -20,13 +20,14 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Transactional
-    public void crearUsuario(String nombreUsuario, String clave, RolUsuario rol) throws Exception{
+    public void crearUsuario(String nombreUsuario, String clave, RolUsuario rol, Persona persona) throws Exception{
         try {
             Usuario user = new Usuario();
             user.setNombreUsuario(nombreUsuario);
             String claveHash = HashForLogin.hashClave(clave); //Encriptar clave
             user.setClave(claveHash);
             user.setRol(rol);
+            user.setPersona(persona);
             usuarioRepository.save(user);
         } catch (Exception e) {
             throw new Exception("Error al crear el usuario: " + e.getMessage());
@@ -35,7 +36,7 @@ public class UsuarioService {
 
 
     @Transactional
-    public void modificarUsuario(String idUsuario, String nombreUsuario, String clave, RolUsuario rol) throws Exception{
+    public void modificarUsuario(String idUsuario, String nombreUsuario, String clave, RolUsuario rol, Persona persona) throws Exception{
         try {
             Optional<Usuario> user = usuarioRepository.findById(idUsuario);
             if (user.isPresent()) {
@@ -44,6 +45,7 @@ public class UsuarioService {
                 String claveHash = HashForLogin.hashClave(clave); //Encriptar clave
                 userAct.setClave(claveHash);
                 userAct.setRol(rol);
+                userAct.setPersona(persona);
                 usuarioRepository.save(userAct);
             } else {
                 throw new Exception("Usuario no encontrado");

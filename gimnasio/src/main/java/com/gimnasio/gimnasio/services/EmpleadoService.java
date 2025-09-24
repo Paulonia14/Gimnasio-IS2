@@ -6,6 +6,8 @@ import com.gimnasio.gimnasio.repositories.EmpleadoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.Date;
 import com.gimnasio.gimnasio.enumerations.TipoDocumento;
 import com.gimnasio.gimnasio.entities.Direccion;
@@ -21,7 +23,7 @@ public class EmpleadoService {
     private EmpleadoRepository empleadoRepository;
 
     @Transactional
-    public void crearEmpleado(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
+    public void crearEmpleado(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
         try {
             validar(nombre, apellido, fechaNacimiento, tipoDocumento, numeroDocumento, telefono, correoElectronico, direccion, sucursal, tipoEmpleado);
             Empleado empleado = new Empleado();
@@ -42,7 +44,7 @@ public class EmpleadoService {
         }
     }
 
-    public void modificarEmpleado(String id, String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
+    public void modificarEmpleado(String id, String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
         try {
             Optional<Empleado> optEmpleado = empleadoRepository.findById(id);
             if (optEmpleado.isPresent()) {
@@ -127,7 +129,7 @@ public class EmpleadoService {
         }
     }
 
-    public void validar(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
+    public void validar(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal, TipoEmpleado tipoEmpleado) throws Exception {
         if (nombre == null || nombre.trim().isEmpty()) {
             throw new Exception("El nombre no puede estar vacío.");
         }

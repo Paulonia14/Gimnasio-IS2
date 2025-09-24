@@ -1,7 +1,11 @@
 package com.gimnasio.gimnasio.services;
 
+import com.gimnasio.gimnasio.entities.Direccion;
 import com.gimnasio.gimnasio.entities.Socio;
+import com.gimnasio.gimnasio.entities.Sucursal;
+import com.gimnasio.gimnasio.entities.Usuario;
 import com.gimnasio.gimnasio.enumerations.TipoDocumento;
+import com.gimnasio.gimnasio.repositories.DireccionRepository;
 import com.gimnasio.gimnasio.repositories.SocioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +24,16 @@ public class SocioService {
     @Autowired
     private SocioRepository socioRepository;
 
+    @Autowired
+    private DireccionRepository direccionRepository;
+
     public Long obtenerUltimoNumeroSocio() {
         Long ultimo = socioRepository.findUltimoNumeroSocio();
         return (ultimo == null) ? 0L : ultimo;
     }
 
     @Transactional
-    public void crearSocio(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico) throws Exception{
+    public void crearSocio(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal) throws Exception{
         try {
             Socio socio = new Socio();
             socio.setNombre(nombre);
@@ -38,6 +45,10 @@ public class SocioService {
             socio.setCorreoElectronico(correoElectronico);
             Long ultimo = obtenerUltimoNumeroSocio();
             socio.setNumeroSocio(ultimo + 1);
+            Direccion direccionGuardada = direccionRepository.save(direccion);
+
+            socio.setDireccion(direccion);
+            socio.setSucursal(sucursal);
             socio.setEliminado(false);
             socioRepository.save(socio);
         } catch (Exception e) {
@@ -46,7 +57,32 @@ public class SocioService {
     }
 
     @Transactional
-    public void modificarSocio(String nombre, String apellido, Date fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Long numeroSocio) throws Exception{
+    public Socio crearSocioObj(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Direccion direccion, Sucursal sucursal) throws Exception{
+        try {
+            Socio socio = new Socio();
+            socio.setNombre(nombre);
+            socio.setApellido(apellido);
+            socio.setFechaNacimiento(fechaNacimiento);
+            socio.setTipoDocumento(tipoDocumento);
+            socio.setNumeroDocumento(numeroDocumento);
+            socio.setTelefono(telefono);
+            socio.setCorreoElectronico(correoElectronico);
+            Long ultimo = obtenerUltimoNumeroSocio();
+            socio.setNumeroSocio(ultimo + 1);
+            Direccion direccionGuardada = direccionRepository.save(direccion);
+
+            socio.setDireccion(direccion);
+            socio.setSucursal(sucursal);
+            socio.setEliminado(false);
+            socioRepository.save(socio);
+            return socio;
+        } catch (Exception e) {
+            throw new Exception("Error al crear socio: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void modificarSocio(String nombre, String apellido, LocalDate fechaNacimiento, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String correoElectronico, Long numeroSocio, Direccion direccion, Sucursal sucursal) throws Exception{
         try {
             Optional<Socio> optSocio = socioRepository.findById(numeroSocio);
             if (optSocio.isPresent()) {
@@ -58,6 +94,8 @@ public class SocioService {
                 socio.setNumeroDocumento(numeroDocumento);
                 socio.setTelefono(telefono);
                 socio.setCorreoElectronico(correoElectronico);
+                socio.setDireccion(direccion);
+                socio.setSucursal(sucursal);
                 socioRepository.save(socio);
             } else {
                 throw new Exception("Socio no encontrado");
@@ -85,6 +123,20 @@ public class SocioService {
         }
     }
 
+
+    public Socio buscarSocio(Long idSocio) throws Exception{
+        try {
+            Optional<Socio> socio = socioRepository.findById(idSocio);
+            if (socio.isPresent()) {
+                Socio socioAct = socio.get();
+                return socioAct;
+            } else {
+                throw new Exception("Socio no encontrado");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al buscar socio: " + e.getMessage());
+        }
+    }
 
     @Transactional //Creo que este tipo de métodos no van con Transactional
     public List<Socio> findAll() throws Exception {

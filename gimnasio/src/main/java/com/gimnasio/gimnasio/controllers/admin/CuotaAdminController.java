@@ -70,9 +70,7 @@ public class CuotaAdminController {
     }
 
     @PostMapping("/crear")
-    public String crearCuotas(@RequestParam("mes") Meses mes,
-                              @RequestParam("anio") int anio,
-                              RedirectAttributes redirect) {
+    public String crearCuotas(@RequestParam("mes") Meses mes, @RequestParam("anio") int anio, RedirectAttributes redirect) {
         try {
             ValorCuota valorActivo = valorCuotaService.obtenerEntidadActiva();
 

@@ -39,6 +39,26 @@ public class DireccionService {
             throw new Exception("Error al crear dirección: " + e.getMessage());
         }
     }
+    @Transactional
+    public Direccion crearDireccionObj(String calle, String numeracion, String barrio, String manzanaPiso, String casaDepartamento, String referencia, String idLocalidad) throws Exception {
+        try {
+            validar(calle, numeracion, barrio, manzanaPiso, casaDepartamento, referencia, idLocalidad);
+            Direccion direccion = new Direccion();
+            direccion.setCalle(calle);
+            direccion.setNumeracion(numeracion);
+            direccion.setBarrio(barrio);
+            direccion.setManzanaPiso(manzanaPiso);
+            direccion.setCasaDepartamento(casaDepartamento);
+            direccion.setReferencia(referencia);
+            direccion.setEliminado(false);
+            Localidad localidad = buscarLocalidad(idLocalidad);
+            direccion.setLocalidad(localidad);
+            direccionRepository.save(direccion);
+            return direccion;
+        } catch (Exception e) {
+            throw new Exception("Error al crear dirección: " + e.getMessage());
+        }
+    }
 
     public void validar(String calle, String numeracion, String barrio, String manzanaPiso, String casaDepartamento, String referencia, String idLocalidad) throws Exception {
         if (calle == null || calle.trim().isEmpty()) {
