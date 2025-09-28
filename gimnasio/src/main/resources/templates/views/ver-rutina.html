@@ -33,27 +33,27 @@
 
             <div class="mb-3">
                 <label class="form-label">Socio</label>
-                <input type="text" class="form-control" th:value="${rutina.socio.nombre + ' ' + rutina.socio.apellido}" disabled>
+                <input type="text" class="form-control" th:value="${rutina.socio.nombre + ' ' + rutina.socio.apellido}" disabled required style="color:#212529 !important;">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Profesor</label>
-                <input type="text" class="form-control" th:value="${rutina.empleado.nombre + ' ' + rutina.empleado.apellido}" disabled>
+                <input type="text" class="form-control" th:value="${rutina.empleado.nombre + ' ' + rutina.empleado.apellido}" disabled required style="color:#212529 !important;">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Fecha de Inicio</label>
-                <input type="date" class="form-control" th:value="${#dates.format(rutina.fechaInicio,'yyyy-MM-dd')}" disabled>
+                <input type="date" class="form-control" th:value="${#dates.format(rutina.fechaInicio,'yyyy-MM-dd')}" disabled required style="color:#212529 !important;">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Fecha de Finalización</label>
-                <input type="date" class="form-control" th:value="${#dates.format(rutina.fechaFinalizacion,'yyyy-MM-dd')}" disabled>
+                <input type="date" class="form-control" th:value="${#dates.format(rutina.fechaFinalizacion,'yyyy-MM-dd')}" disabled required style="color:#212529 !important;">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Estado</label>
-                <input type="text" class="form-control" th:value="${rutina.estadoRutina}" disabled>
+                <input type="text" class="form-control" th:value="${rutina.estadoRutina}" disabled required style="color:#212529 !important;">
             </div>
 
             <div class="mb-3">

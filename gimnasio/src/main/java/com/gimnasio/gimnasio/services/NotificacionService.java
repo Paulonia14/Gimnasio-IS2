@@ -60,7 +60,7 @@ public class NotificacionService {
 
     }
 
-    @Scheduled(cron = "0 04 22 * * *", zone = "America/Argentina/Buenos_Aires")
+    @Scheduled(cron = "0 35 16 * * *", zone = "America/Argentina/Buenos_Aires")
     public void tareaDiariaCumpleanios() {
         enviarFelicitacion();
     }

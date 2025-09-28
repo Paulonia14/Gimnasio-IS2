@@ -17,7 +17,7 @@ public class PagoService {
 
     public String Pago() throws ErrorServiceException {
 
-        MercadoPagoConfig.setAccessToken("APP_USR-");
+        MercadoPagoConfig.setAccessToken("APP_USR");
 
         PreferenceClient client = new PreferenceClient();
 
